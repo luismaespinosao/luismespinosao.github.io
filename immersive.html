@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Immersive Environments — Case Study | Luis Mario Espinosa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#08090d;--surface:#10121a;--border:#1e2230;--text:#e8e4dc;--muted:#7a7e8a;--accent:#d4845a;--accent2:#7eb8b0;--white:#f5f2ec;}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--text);font-family:'Lora',Georgia,serif;font-size:16px;line-height:1.7;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1.4rem 4rem;border-bottom:1px solid var(--border);background:rgba(8,9,13,0.9);backdrop-filter:blur(12px);}
+  .nav-logo{font-family:'IBM Plex Mono',monospace;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);text-decoration:none;}
+  .nav-back{font-family:'IBM Plex Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+  .nav-back:hover{color:var(--white);}
+
+  /* HERO with animated VR visualization */
+  .case-hero{position:relative;z-index:1;min-height:100vh;display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);}
+  .hero-content{padding:9rem 4rem 5rem;display:flex;flex-direction:column;justify-content:center;border-right:1px solid var(--border);}
+  .hero-visual{display:flex;align-items:center;justify-content:center;padding:4rem;background:var(--surface);position:relative;overflow:hidden;}
+
+  /* Animated grid environment */
+  .hero-visual::before{content:'';position:absolute;inset:0;background:
+    linear-gradient(transparent 60%, rgba(212,132,90,0.04) 100%),
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size:100% 100%, 40px 40px, 40px 40px;
+    transform:perspective(400px) rotateX(35deg) translateY(30%);
+    transform-origin:bottom center;
+    animation:gridMove 8s linear infinite;}
+  @keyframes gridMove{from{background-position:0 0, 0 0, 0 0;}to{background-position:0 0, 0 -40px, 0 0;}}
+
+  .vr-diagram{position:relative;z-index:1;text-align:center;}
+  .vr-headset{width:220px;height:auto;margin:0 auto 2rem;}
+  .proposal-cards{display:flex;flex-direction:column;gap:0.75rem;width:280px;}
+  .p-card{background:rgba(8,9,13,0.8);border:1px solid var(--border);padding:0.85rem 1.25rem;display:flex;align-items:center;gap:1rem;transition:border-color 0.3s;}
+  .p-card:hover{border-color:var(--accent);}
+  .p-num{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--accent);font-weight:700;min-width:32px;}
+  .p-label{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:0.06em;line-height:1.4;}
+  .p-label strong{color:var(--text);display:block;}
+  .p-votes{font-family:'IBM Plex Mono',monospace;font-size:0.62rem;color:var(--accent2);margin-left:auto;}
+  .p-card.winner{border-color:rgba(212,132,90,0.5);background:rgba(212,132,90,0.06);}
+
+  .case-label{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;display:flex;align-items:center;gap:0.75rem;}
+  .case-label::before{content:'';display:inline-block;width:32px;height:1px;background:var(--accent);}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,4vw,4rem);font-weight:700;line-height:1.1;color:var(--white);margin-bottom:1rem;}
+  h1 em{font-style:italic;color:var(--accent);}
+  .case-tagline{font-family:'IBM Plex Mono',monospace;font-size:0.78rem;color:var(--accent2);letter-spacing:0.06em;margin-bottom:2rem;}
+  .case-summary{font-size:1rem;color:var(--muted);line-height:1.85;margin-bottom:2rem;}
+  .meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);margin-bottom:2rem;max-width:420px;}
+  .meta-item{background:var(--bg);padding:1rem 1.25rem;}
+  .meta-label{font-family:'IBM Plex Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.3rem;}
+  .meta-value{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--accent);}
+  .badge{display:inline-flex;align-items:center;gap:0.5rem;border:1px solid;padding:0.55rem 1.1rem;margin-bottom:0.6rem;font-family:'IBM Plex Mono',monospace;font-size:0.65rem;letter-spacing:0.07em;}
+  .badge.orange{background:rgba(212,132,90,0.08);border-color:rgba(212,132,90,0.3);color:var(--accent);}
+  .badge.teal{background:rgba(126,184,176,0.08);border-color:rgba(126,184,176,0.3);color:var(--accent2);}
+  .btn{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.85rem 2rem;text-decoration:none;border:1px solid;transition:all 0.2s;display:inline-block;margin-right:0.75rem;margin-top:1rem;}
+  .btn-primary{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+  .btn-primary:hover{background:transparent;color:var(--accent);}
+  .btn-secondary{background:transparent;border-color:var(--border);color:var(--muted);}
+  .btn-secondary:hover{border-color:var(--muted);color:var(--white);}
+
+  .case-section{position:relative;z-index:1;padding:5rem 4rem;border-bottom:1px solid var(--border);max-width:1100px;margin:0 auto;}
+  .section-header{display:flex;align-items:baseline;gap:1.5rem;margin-bottom:3rem;}
+  .section-num{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;color:var(--accent);letter-spacing:0.1em;white-space:nowrap;}
+  h2{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;color:var(--white);}
+  h3{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--white);margin-bottom:0.75rem;}
+  p{color:var(--muted);line-height:1.85;margin-bottom:1rem;}
+  p strong{color:var(--text);font-weight:500;}
+
+  .process-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);margin-bottom:3rem;}
+  .process-card{background:var(--bg);padding:2.5rem;}
+  .process-step-num{font-family:'IBM Plex Mono',monospace;font-size:0.62rem;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem;}
+
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin:2rem 0;}
+  .stat-box{background:var(--bg);padding:2rem;text-align:center;}
+  .stat-big{font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:var(--accent);display:block;line-height:1;margin-bottom:0.5rem;}
+  .stat-desc{font-family:'IBM Plex Mono',monospace;font-size:0.62rem;color:var(--muted);letter-spacing:0.05em;line-height:1.5;}
+
+  .req-table{width:100%;border-collapse:collapse;margin:1.5rem 0;}
+  .req-table th{font-family:'IBM Plex Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);padding:0.75rem 1rem;text-align:left;border-bottom:2px solid var(--border);}
+  .req-table td{font-size:0.88rem;color:var(--muted);padding:0.85rem 1rem;border-bottom:1px solid var(--border);vertical-align:top;}
+  .req-table td:first-child{font-family:'IBM Plex Mono',monospace;color:var(--accent2);font-size:0.7rem;}
+  .req-table tr:hover td{background:var(--surface);}
+
+  .insight{background:var(--surface);border-left:3px solid var(--accent);padding:1.5rem 2rem;margin:1.5rem 0;}
+  .insight p{margin:0;color:var(--text);font-style:italic;}
+  .insight-author{font-family:'IBM Plex Mono',monospace;font-size:0.62rem;color:var(--muted);margin-top:0.75rem;display:block;font-style:normal;}
+
+  .tags{display:flex;flex-wrap:wrap;gap:0.5rem;margin:1.5rem 0;}
+  .tag{font-family:'IBM Plex Mono',monospace;font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.35rem 0.85rem;border:1px solid var(--border);color:var(--muted);}
+  .tag.active{border-color:var(--accent);color:var(--accent);}
+
+  /* VOTE VISUALIZATION */
+  .vote-vis{display:flex;gap:1px;background:var(--border);margin:1.5rem 0;}
+  .vote-bar{flex:1;padding:2rem 1.5rem;background:var(--bg);text-align:center;}
+  .vote-bar.winner{background:rgba(212,132,90,0.06);}
+  .vote-count{font-family:'Playfair Display',serif;font-size:3rem;font-weight:700;color:var(--accent);line-height:1;}
+  .vote-bar.winner .vote-count{color:var(--accent);}
+  .vote-label{font-family:'IBM Plex Mono',monospace;font-size:0.62rem;color:var(--muted);letter-spacing:0.06em;margin-top:0.5rem;}
+  .vote-name{font-family:'Lora',serif;font-size:0.9rem;color:var(--text);margin-top:0.25rem;}
+  .vote-winner-tag{font-family:'IBM Plex Mono',monospace;font-size:0.58rem;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;margin-top:0.5rem;}
+
+  footer{position:relative;z-index:1;padding:2rem 4rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+  footer span{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted);}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+  .hero-content>*{animation:fadeUp 0.6s ease both;}
+  .hero-content>*:nth-child(2){animation-delay:0.1s;}
+  .hero-content>*:nth-child(3){animation-delay:0.2s;}
+  ::-webkit-scrollbar{width:4px;}
+  ::-webkit-scrollbar-track{background:var(--bg);}
+  ::-webkit-scrollbar-thumb{background:var(--border);}
+
+  @media(max-width:900px){
+    nav{padding:1.2rem 1.5rem;}
+    .case-hero{grid-template-columns:1fr;min-height:auto;}
+    .hero-content{padding:7rem 1.5rem 3rem;border-right:none;}
+    .hero-visual{padding:2rem;min-height:350px;}
+    .case-section{padding:3rem 1.5rem;}
+    .process-grid{grid-template-columns:1fr;}
+    .stats-row{grid-template-columns:1fr;}
+    .vote-vis{flex-direction:column;}
+    footer{flex-direction:column;gap:0.5rem;padding:1.5rem;}
+  }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">← Luis Mario Espinosa</a>
+  <a href="index.html" class="nav-back">Back to Portfolio</a>
+</nav>
+
+<div class="case-hero">
+  <div class="hero-content">
+    <div class="case-label">Master's Thesis + CLIHC 2025</div>
+    <h1>Immersive Environments for <em>Autonomous Study</em></h1>
+    <div class="case-tagline">User-Centered Design of VR/MR Study Environments · UTM</div>
+    <p class="case-summary">A research-driven design process identifying characteristics for immersive environments that support focused autonomous study in university students. Using a mixed-methods UCD approach with 151 students, three conceptual proposals were developed — mixed reality emerged as the preferred solution.</p>
+    <div class="meta-grid">
+      <div class="meta-item"><div class="meta-label">Period</div><div class="meta-value">2024–2026 (ongoing)</div></div>
+      <div class="meta-item"><div class="meta-label">Role</div><div class="meta-value">Lead Researcher & UX Designer</div></div>
+      <div class="meta-item"><div class="meta-label">Domain</div><div class="meta-value">XR / Cognitive Ergonomics</div></div>
+      <div class="meta-item"><div class="meta-label">Funded by</div><div class="meta-value">SECIHTI Scholarship</div></div>
+    </div>
+    <div><span class="badge orange">🏛️ Accepted — CLIHC 2025 (Congreso Latinoamericano de IHC)</span></div>
+    <div><span class="badge teal">🎓 Master's Thesis · HCI Specialization · UTM</span></div>
+    <div>
+      <a href="https://osf.io/tvnfk/files/2fuj5" target="_blank" class="btn btn-primary">View Research Data</a>
+      <a href="index.html" class="btn btn-secondary">← Portfolio</a>
+    </div>
+  </div>
+
+  <!-- Animated visual with proposal cards -->
+  <div class="hero-visual">
+    <div class="vr-diagram">
+      <svg class="vr-headset" viewBox="0 0 220 130" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="glow" cx="50%" cy="50%" r="60%">
+            <stop offset="0%" stop-color="#d4845a" stop-opacity="0.2"/>
+            <stop offset="100%" stop-color="#d4845a" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="110" cy="65" rx="90" ry="55" fill="url(#glow)"/>
+        <rect x="30" y="30" width="160" height="75" rx="20" fill="none" stroke="#d4845a" stroke-width="1.5" stroke-opacity="0.7"/>
+        <rect x="30" y="85" width="160" height="8" rx="4" fill="none" stroke="#d4845a" stroke-width="1" stroke-opacity="0.4"/>
+        <ellipse cx="80" cy="67" rx="28" ry="25" fill="none" stroke="#7eb8b0" stroke-width="1.2" stroke-opacity="0.6"/>
+        <ellipse cx="140" cy="67" rx="28" ry="25" fill="none" stroke="#7eb8b0" stroke-width="1.2" stroke-opacity="0.6"/>
+        <circle cx="80" cy="67" r="8" fill="#7eb8b0" fill-opacity="0.15"/>
+        <circle cx="140" cy="67" r="8" fill="#7eb8b0" fill-opacity="0.15"/>
+        <line x1="108" y1="42" x2="112" y2="42" stroke="#d4845a" stroke-width="2" stroke-opacity="0.5"/>
+        <line x1="5" y1="75" x2="30" y2="75" stroke="#d4845a" stroke-width="1" stroke-opacity="0.4"/>
+        <line x1="190" y1="75" x2="215" y2="75" stroke="#d4845a" stroke-width="1" stroke-opacity="0.4"/>
+      </svg>
+      <div class="proposal-cards">
+        <div class="p-card">
+          <div class="p-num">P1</div>
+          <div class="p-label"><strong>Physical Environment</strong>Adapted study space</div>
+          <div class="p-votes">4/10</div>
+        </div>
+        <div class="p-card">
+          <div class="p-num">P2</div>
+          <div class="p-label"><strong>Hybrid VR</strong>Google Cardboard</div>
+          <div class="p-votes">0/10</div>
+        </div>
+        <div class="p-card winner">
+          <div class="p-num">P3</div>
+          <div class="p-label"><strong>Mixed Reality</strong>Meta Quest 3 · Preferred</div>
+          <div class="p-votes">6/10 ★</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<div class="case-section">
+  <div class="section-header"><span class="section-num">01 — Context</span><h2>The Problem</h2></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;">
+    <div>
+      <p>University students face significant difficulties concentrating during autonomous study sessions — distracted by digital devices, noise, inadequate spaces, and lack of structure. This is especially acute at UTM, where the student population is <strong>predominantly non-local</strong>, residing in shared spaces with limited privacy and sensory control.</p>
+      <p>Extended Reality (XR) technologies offer a promising approach to mitigating environmental interference by modifying spatial perception. However, <strong>no solutions specifically designed for autonomous study sessions</strong> existed in the literature — creating a clear design gap.</p>
+    </div>
+    <div>
+      <div class="stats-row" style="grid-template-columns:1fr;margin:0;">
+        <div class="stat-box"><span class="stat-big">151</span><span class="stat-desc">students surveyed (99% confidence, structured questionnaire)</span></div>
+        <div class="stat-box" style="border-top:1px solid var(--border);"><span class="stat-big">3</span><span class="stat-desc">design proposals evaluated: Physical, Hybrid VR, Mixed Reality</span></div>
+        <div class="stat-box" style="border-top:1px solid var(--border);"><span class="stat-big">60%</span><span class="stat-desc">of Focus Group voted Mixed Reality as preferred solution</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- METHODOLOGY -->
+<div class="case-section">
+  <div class="section-header"><span class="section-num">02 — Methodology</span><h2>User-Centered Design Process</h2></div>
+  <p>The project follows the <strong>Requirements Analysis</strong> and <strong>Conceptual Design</strong> phases of the UCD process, using a mixed-methods approach across three instruments.</p>
+  <div class="tags">
+    <span class="tag active">Literature Review</span>
+    <span class="tag active">Exploratory Survey (n=9)</span>
+    <span class="tag active">Structured Questionnaire (n=151)</span>
+    <span class="tag active">Stratified Sampling</span>
+    <span class="tag active">Thematic Coding</span>
+    <span class="tag active">Focus Group (n=10)</span>
+    <span class="tag active">Descriptive Statistics</span>
+    <span class="tag active">Conceptual Design</span>
+  </div>
+  <div class="process-grid">
+    <div class="process-card">
+      <div class="process-step-num">01 — Explore</div>
+      <h3>Exploratory Survey (n=9)</h3>
+      <p>A mixed-format questionnaire validated in the local context the difficulties around self-regulation and study habitability reported in the literature. Identified key pain points: digital distractors, noise, shared spaces, and lack of structured routines.</p>
+    </div>
+    <div class="process-card">
+      <div class="process-step-num">02 — Survey</div>
+      <h3>Structured Questionnaire (n=151)</h3>
+      <p>Applied to 151 undergraduate students via Google Forms (Sept–Nov 2025), recruited through non-probabilistic stratified sampling by major and semester. Sections covered: housing context, study habits, recurring distractors, and technology expectations. Sample calculated at <strong>99% confidence</strong>, 10% margin of error.</p>
+    </div>
+    <div class="process-card">
+      <div class="process-step-num">03 — Design</div>
+      <h3>6 Functional Requirements → 3 Proposals</h3>
+      <p>Design requirements derived from empirical findings, ensuring proposals respond to real student needs rather than arbitrary decisions. Three proposals were conceptualized: adapted physical environment (P1), hybrid VR with Google Cardboard (P2), and full Mixed Reality with Meta Quest 3 (P3).</p>
+    </div>
+    <div class="process-card">
+      <div class="process-step-num">04 — Evaluate</div>
+      <h3>Focus Group (n=10)</h3>
+      <p>Conducted at UsaLab · UTM with 10 students from diverse engineering, science, and business programs. Each proposal presented independently via conceptual sketches and simulation video. Individual vote with justification after blind evaluation.</p>
+    </div>
+  </div>
+</div>
+
+<!-- REQUIREMENTS -->
+<div class="case-section">
+  <div class="section-header"><span class="section-num">03 — Design Requirements</span><h2>Traceability: Needs → Design</h2></div>
+  <table class="req-table">
+    <thead><tr><th>ID</th><th>Requirement</th><th>Design Strategy</th></tr></thead>
+    <tbody>
+      <tr><td>RF1</td><td>Distractor stimulus management</td><td>Physical panels (P1), visual filtering (P2), digital blocking (P3)</td></tr>
+      <tr><td>RF2</td><td>Planning & session closure support</td><td>Start rituals (P1), temporal guides (P2), XR interfaces (P3)</td></tr>
+      <tr><td>RF3</td><td>Focused environment creation</td><td>Focal lighting (P1), perceptual isolation (P2, P3)</td></tr>
+      <tr><td>RF4</td><td>Physical fatigue reduction</td><td>Active pause reminders + light exercises (P1, P2, P3)</td></tr>
+      <tr><td>RF5</td><td>Study method integration</td><td>Printed guides (P1), Pomodoro timers (P2), active feedback (P3)</td></tr>
+      <tr><td>RF6</td><td>Sensory condition control</td><td>Adjustable lamp (P1), audio guide (P2), dynamic XR control (P3)</td></tr>
+      <tr><td>RNF1</td><td>Progress feedback</td><td>Visual progress indicators and completed goals (P3)</td></tr>
+      <tr><td>RNF2</td><td>Technology implementation</td><td>Immersive headsets and digital platforms (P2, P3)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- RESULTS -->
+<div class="case-section">
+  <div class="section-header"><span class="section-num">04 — Results</span><h2>Focus Group Findings</h2></div>
+  <div class="vote-vis">
+    <div class="vote-bar">
+      <div class="vote-count">4</div>
+      <div class="vote-label">votes / 10</div>
+      <div class="vote-name">P1 — Physical Environment</div>
+    </div>
+    <div class="vote-bar">
+      <div class="vote-count" style="color:var(--muted)">0</div>
+      <div class="vote-label">votes / 10</div>
+      <div class="vote-name">P2 — Hybrid VR (Cardboard)</div>
+    </div>
+    <div class="vote-bar winner">
+      <div class="vote-count">6</div>
+      <div class="vote-label">votes / 10</div>
+      <div class="vote-name">P3 — Mixed Reality</div>
+      <div class="vote-winner-tag">↑ Preferred solution</div>
+    </div>
+  </div>
+
+  <p>Students who preferred <strong>Mixed Reality (P3)</strong> valued its visual support indicators and ability to manage distractions like noise and family interruptions — even in domestic settings. Participants primarily from computing, civil, industrial, and design engineering programs.</p>
+  <p>Students who chose <strong>Physical Environment (P1)</strong> had pre-established study routines and preferred environments compatible with analog materials (notes, exercises). P2 was unanimously discarded due to workflow fragmentation.</p>
+
+  <div class="insight">
+    <p>"Even having space at home, mixed reality could help manage distractions like noise and family interruptions."</p>
+    <span class="insight-author">— Focus Group Participant, computing engineering</span>
+  </div>
+
+  <p>A key finding: students estimated MR hardware costs at up to $1,160 USD — the actual market price is ~$290 USD. Even at inflated perceived cost, P3 was the most chosen option, indicating that <strong>adoption willingness is not purely cost-dependent.</strong> When informed of the real price, several P1 voters showed openness to P3.</p>
+
+  <div class="stats-row">
+    <div class="stat-box"><span class="stat-big">$290</span><span class="stat-desc">actual MR hardware cost vs. $1,160 estimated by participants</span></div>
+    <div class="stat-box"><span class="stat-big">25min</span><span class="stat-desc">Pomodoro cycles integrated as HCI fatigue mitigation strategy</span></div>
+    <div class="stat-box"><span class="stat-big">CLIHC</span><span class="stat-desc">Paper accepted · Congreso Latinoamericano de Interacción Humano-Computadora 2025</span></div>
+  </div>
+
+  <div style="margin-top:2.5rem;">
+    <a href="https://osf.io/tvnfk/files/2fuj5" target="_blank" class="btn btn-primary">View Research Data (OSF)</a>
+    <a href="index.html" class="btn btn-secondary">← Back to Portfolio</a>
+  </div>
+</div>
+
+<footer>
+  <span>Luis Mario Espinosa Ortiz · Oaxaca, México</span>
+  <span>Master's Thesis · CLIHC 2025 · SECIHTI Scholarship</span>
+</footer>
+</body>
+</html>
