@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Immersive Study Environments — Case Study | Luis Mario Espinosa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<!-- ============================================================
+     STYLES — misma base que tiku.html y lucero.html
+     Diferencias visuales:
+     - Hero dividido: texto izquierda, visual oscuro con animación de cuadrícula derecha
+     - Panel oscuro con SVG del visor VR y tarjetas de propuestas
+     - Tabla de requerimientos (req-table)
+     - Barras de votación (vote-bars)
+     ============================================================ -->
+<style>
+  /* === VARIABLES GLOBALES === */
+  :root{--white:#ffffff;--off:#f7f5f2;--ink:#111111;--gray:#888888;--light:#e8e4de;--accent:#c95c2e;--sans:'DM Sans',sans-serif;--serif:'DM Serif Display',Georgia,serif;}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--white);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;}
+
+  /* === NAV === */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1.5rem 3rem;background:rgba(255,255,255,0.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--light);}
+  .nav-name{font-family:var(--serif);font-size:1.05rem;color:var(--ink);text-decoration:none;}
+  .nav-right{display:flex;align-items:center;gap:2rem;}
+
+  /* === BOTÓN DE IDIOMA === */
+  .lang-switch{display:flex;border:1px solid var(--light);border-radius:2px;overflow:hidden;}
+  .lang-btn{font-size:0.72rem;font-weight:500;letter-spacing:0.08em;padding:0.35rem 0.75rem;background:none;border:none;cursor:pointer;color:var(--gray);transition:all 0.2s;font-family:var(--sans);}
+  .lang-btn.active{background:var(--ink);color:var(--white);}
+  .lang-btn:hover:not(.active){background:var(--off);color:var(--ink);}
+  .nav-back{font-size:0.78rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray);text-decoration:none;transition:color 0.2s;}
+  .nav-back:hover{color:var(--ink);}
+
+  /* === HERO DIVIDIDO
+     Columna izquierda: texto sobre fondo blanco
+     Columna derecha: panel oscuro con animación de cuadrícula y visual VR
+     ============================================================ */
+  .hero{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;border-bottom:1px solid var(--light);}
+  .hero-content{padding:9rem 3rem 4rem;display:flex;flex-direction:column;justify-content:center;border-right:1px solid var(--light);}
+
+  /* Panel oscuro derecho con cuadrícula animada */
+  .hero-visual{background:#0f0f1a;display:flex;align-items:center;justify-content:center;padding:3rem;position:relative;overflow:hidden;}
+  .hero-visual::before{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(rgba(201,92,46,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,92,46,0.04) 1px,transparent 1px);
+    background-size:48px 48px;
+    transform:perspective(500px) rotateX(40deg) translateY(25%);
+    transform-origin:bottom;
+    animation:grid 10s linear infinite;
+  }
+  @keyframes grid{to{background-position:0 -48px,0 0;}}
+
+  /* Contenedor del diagrama VR */
+  .vr-ui{position:relative;z-index:1;width:100%;max-width:380px;}
+
+  /* Tarjetas de propuestas P1, P2, P3 */
+  .proposals{display:flex;flex-direction:column;gap:2px;}
+  .proposal{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;transition:border-color 0.2s;}
+  .proposal.winner{background:rgba(201,92,46,0.08);border-color:rgba(201,92,46,0.4);}
+  .p-letter{font-family:var(--serif);font-size:2rem;color:rgba(255,255,255,0.3);min-width:36px;line-height:1;}
+  .proposal.winner .p-letter{color:var(--accent);}
+  .p-info{flex:1;}
+  .p-name{font-size:0.82rem;color:rgba(255,255,255,0.8);margin-bottom:0.15rem;}
+  .p-detail{font-size:0.68rem;color:rgba(255,255,255,0.35);letter-spacing:0.04em;}
+  .p-vote{font-size:0.75rem;color:rgba(255,255,255,0.3);font-weight:500;}
+  .proposal.winner .p-vote{color:var(--accent);}
+
+  /* === TIPOGRAFÍA HERO === */
+  .hero-eyebrow{font-size:0.75rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:1.25rem;}
+  h1{font-family:var(--serif);font-size:clamp(2.2rem,4vw,3.8rem);font-weight:400;line-height:1.1;margin-bottom:1.25rem;}
+  h1 em{font-style:italic;color:var(--gray);}
+  .hero-sub{font-size:1rem;color:var(--gray);line-height:1.8;max-width:480px;margin-bottom:2rem;}
+
+  /* === META GRID === */
+  .meta-row{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--light);border-left:1px solid var(--light);margin-bottom:2rem;}
+  .meta-cell{padding:1rem 1.5rem;border-right:1px solid var(--light);border-bottom:1px solid var(--light);}
+  .meta-label{font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#bbb;display:block;margin-bottom:0.25rem;}
+  .meta-value{font-size:0.85rem;color:var(--ink);}
+
+  /* === BADGES Y BOTONES === */
+  .badges{display:flex;flex-wrap:wrap;gap:0.6rem;margin-bottom:2rem;}
+  .badge{font-size:0.72rem;font-weight:500;letter-spacing:0.06em;padding:0.5rem 1rem;border:1.5px solid;border-radius:2px;}
+  .badge.accent{border-color:var(--accent);color:var(--accent);}
+  .badge.dark{border-color:var(--light);color:var(--gray);}
+  .btn{display:inline-block;font-size:0.78rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.9rem 2rem;text-decoration:none;border:1.5px solid;border-radius:2px;transition:all 0.2s;margin-right:0.75rem;margin-bottom:0.75rem;}
+  .btn.primary{background:var(--ink);border-color:var(--ink);color:var(--white);}
+  .btn.primary:hover{background:transparent;color:var(--ink);}
+  .btn.secondary{background:transparent;border-color:var(--light);color:var(--gray);}
+  .btn.secondary:hover{border-color:var(--ink);color:var(--ink);}
+
+  /* === SECCIONES === */
+  .section{padding:5rem 3rem;border-top:1px solid var(--light);}
+  .section-inner{max-width:1000px;margin:0 auto;}
+  .section-label{font-size:0.72rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#bbb;margin-bottom:2.5rem;display:flex;align-items:center;gap:1rem;}
+  .section-label::after{content:'';flex:1;height:1px;background:var(--light);}
+  h2{font-family:var(--serif);font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:400;line-height:1.15;margin-bottom:1.5rem;}
+  h2 em{font-style:italic;color:var(--gray);}
+  h3{font-family:var(--serif);font-size:1.2rem;font-weight:400;margin-bottom:0.75rem;}
+  p{color:var(--gray);line-height:1.85;margin-bottom:1rem;}
+  p strong{color:var(--ink);font-weight:500;}
+
+  /* === LAYOUTS === */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+  .steps{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--light);margin:2rem 0;}
+  .step{background:var(--white);padding:2.5rem;}
+  .step-num{font-size:0.68rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:0.75rem;display:block;}
+
+  /* === ESTADÍSTICAS === */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--light);margin:2rem 0;}
+  .stat{padding:2rem 1.5rem;border-right:1px solid var(--light);text-align:center;}
+  .stat:last-child{border-right:none;}
+  .stat-n{font-family:var(--serif);font-size:2.5rem;font-weight:400;color:var(--ink);line-height:1;display:block;margin-bottom:0.5rem;}
+  .stat-d{font-size:0.75rem;color:var(--gray);line-height:1.4;}
+
+  /* === TAGS === */
+  .tags{display:flex;flex-wrap:wrap;gap:0.4rem;margin:1.5rem 0;}
+  .tag{font-size:0.65rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;padding:0.3rem 0.75rem;border:1px solid var(--light);color:var(--gray);border-radius:2px;}
+
+  /* === TABLA DE REQUERIMIENTOS === */
+  .req-table{width:100%;border-collapse:collapse;margin:1.5rem 0;}
+  .req-table th{font-size:0.68rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray);padding:0.75rem 1rem;text-align:left;border-bottom:2px solid var(--light);}
+  .req-table td{font-size:0.88rem;color:var(--gray);padding:0.9rem 1rem;border-bottom:1px solid var(--light);vertical-align:top;}
+  .req-table td:first-child{font-weight:500;color:var(--accent);font-size:0.78rem;}
+  .req-table tr:hover td{background:var(--off);}
+
+  /* === BARRAS DE VOTACIÓN (resultado del focus group) === */
+  .vote-bars{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;background:var(--light);margin:2rem 0;}
+  .vote-bar{background:var(--white);padding:2.5rem 2rem;text-align:center;}
+  .vote-bar.winner{background:var(--off);}
+  .vote-n{font-family:var(--serif);font-size:4rem;font-weight:400;color:var(--ink);line-height:1;margin-bottom:0.5rem;}
+  .vote-bar.winner .vote-n{color:var(--accent);}
+  .vote-d{font-size:0.78rem;color:var(--gray);line-height:1.4;}
+  .vote-tag{font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin-top:0.5rem;display:block;}
+
+  /* === CITA DESTACADA === */
+  .quote{border-left:3px solid var(--accent);padding:1.5rem 2rem;margin:2rem 0;background:var(--off);}
+  .quote p{font-family:var(--serif);font-size:1.1rem;font-style:italic;color:var(--ink);margin:0;line-height:1.6;}
+  .quote-source{font-size:0.72rem;color:var(--gray);margin-top:0.75rem;display:block;}
+
+  /* === FOOTER === */
+  footer{padding:2rem 3rem;border-top:1px solid var(--light);display:flex;justify-content:space-between;align-items:center;}
+  footer span{font-size:0.75rem;color:#bbb;}
+
+  /* === TRANSICIÓN CAMBIO DE IDIOMA === */
+  [data-i18n]{transition:opacity 0.15s ease;}
+  body.switching [data-i18n]{opacity:0;}
+
+  /* === ANIMACIÓN ENTRADA === */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  .hero-content>*{animation:fadeUp 0.6s ease both;}
+  .hero-content>*:nth-child(2){animation-delay:0.08s;}
+
+  /* === RESPONSIVE === */
+  @media(max-width:800px){
+    nav{padding:1.25rem 1.5rem;}
+    .hero{grid-template-columns:1fr;min-height:auto;}
+    .hero-content{padding:7rem 1.5rem 3rem;border-right:none;}
+    .hero-visual{min-height:320px;padding:2rem 1.5rem;}
+    .section{padding:3rem 1.5rem;}
+    .two-col,.steps{grid-template-columns:1fr;}
+    .vote-bars{grid-template-columns:1fr;}
+    .stats{grid-template-columns:1fr;}
+    .stat{border-right:none;border-bottom:1px solid var(--light);}
+    footer{flex-direction:column;gap:0.5rem;padding:1.5rem;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAV — Nombre + botón volver + switch de idioma
+     ============================================================ -->
+<nav>
+  <a href="index.html" class="nav-name">Luis Mario Espinosa</a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-back" data-i18n="nav-back">← All Work</a>
+    <div class="lang-switch">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     HERO DIVIDIDO
+     Izquierda: título, meta, badges, botones
+     Derecha: panel oscuro con SVG visor VR + tarjetas de las 3 propuestas
+     ============================================================ -->
+<div class="hero">
+  <!-- Columna izquierda: contenido de texto -->
+  <div class="hero-content">
+    <div class="hero-eyebrow" data-i18n="hero-eyebrow">Master's Thesis · CLIHC 2025</div>
+    <h1 data-i18n="hero-h1">Immersive Environments for <em>Autonomous Study</em></h1>
+    <p class="hero-sub" data-i18n="hero-sub">A user-centered design research process identifying characteristics for immersive environments that support focused study in university students. Mixed-methods study with 151 students; Mixed Reality emerged as the preferred solution.</p>
+
+    <!-- Meta: periodo, rol, dominio, financiamiento -->
+    <div class="meta-row">
+      <div class="meta-cell"><span class="meta-label" data-i18n="meta-period">Period</span><span class="meta-value">2024–2026</span></div>
+      <div class="meta-cell"><span class="meta-label" data-i18n="meta-role">Role</span><span class="meta-value" data-i18n="role-value">Lead Researcher & Designer</span></div>
+      <div class="meta-cell"><span class="meta-label" data-i18n="meta-domain">Domain</span><span class="meta-value" data-i18n="domain-value">XR · Cognitive Ergonomics</span></div>
+      <div class="meta-cell"><span class="meta-label" data-i18n="meta-funded">Funded</span><span class="meta-value" data-i18n="funded-value">SECIHTI Scholarship</span></div>
+    </div>
+
+    <!-- Reconocimientos -->
+    <div class="badges">
+      <span class="badge accent" data-i18n="badge-clihc">🏛️ Accepted · CLIHC 2025</span>
+      <span class="badge dark" data-i18n="badge-thesis">🎓 Master's Thesis · HCI · UTM</span>
+    </div>
+
+    <!-- Botones de acción -->
+    <div>
+      <a href="https://osf.io/tvnfk/files/2fuj5" target="_blank" class="btn primary" data-i18n="btn-data">View Research Data</a>
+      <a href="index.html" class="btn secondary" data-i18n="btn-back">← Back</a>
+    </div>
+  </div>
+
+  <!-- Columna derecha: panel oscuro con visual VR animado -->
+  <div class="hero-visual">
+    <div class="vr-ui">
+      <!-- SVG del visor VR con gradiente de luz -->
+      <svg viewBox="0 0 300 160" width="260" style="display:block;margin:0 auto 2rem;" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="hg" cx="50%" cy="50%" r="60%">
+            <stop offset="0%" stop-color="#c95c2e" stop-opacity="0.25"/>
+            <stop offset="100%" stop-color="#0f0f1a" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="150" cy="80" rx="130" ry="70" fill="url(#hg)"/>
+        <rect x="40" y="35" width="220" height="100" rx="24" fill="none" stroke="#c95c2e" stroke-width="1.5" stroke-opacity="0.7"/>
+        <ellipse cx="108" cy="85" rx="34" ry="30" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.2"/>
+        <ellipse cx="192" cy="85" rx="34" ry="30" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.2"/>
+        <circle cx="108" cy="85" r="10" fill="rgba(255,255,255,0.06)"/>
+        <circle cx="192" cy="85" r="10" fill="rgba(255,255,255,0.06)"/>
+        <line x1="5" y1="90" x2="40" y2="90" stroke="#c95c2e" stroke-width="1" stroke-opacity="0.5"/>
+        <line x1="260" y1="90" x2="295" y2="90" stroke="#c95c2e" stroke-width="1" stroke-opacity="0.5"/>
+      </svg>
+
+      <!-- Tarjetas de las 3 propuestas con resultado de votación -->
+      <div class="proposals">
+        <!-- P1: Entorno Físico (4 votos) -->
+        <div class="proposal">
+          <div class="p-letter">P1</div>
+          <div class="p-info">
+            <div class="p-name" data-i18n="p1-name">Physical Environment</div>
+            <div class="p-detail" data-i18n="p1-detail">Adapted physical study space</div>
+          </div>
+          <div class="p-vote">4/10</div>
+        </div>
+        <!-- P2: VR Híbrido (0 votos) -->
+        <div class="proposal">
+          <div class="p-letter">P2</div>
+          <div class="p-info">
+            <div class="p-name" data-i18n="p2-name">Hybrid VR</div>
+            <div class="p-detail">Google Cardboard</div>
+          </div>
+          <div class="p-vote">0/10</div>
+        </div>
+        <!-- P3: Realidad Mixta — ganadora (6 votos) -->
+        <div class="proposal winner">
+          <div class="p-letter">P3</div>
+          <div class="p-info">
+            <div class="p-name" data-i18n="p3-name">Mixed Reality ★</div>
+            <div class="p-detail">Meta Quest 3 · <span data-i18n="p3-detail">Preferred</span></div>
+          </div>
+          <div class="p-vote">6/10</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SECCIÓN 01 — PROBLEMA
+     ============================================================ -->
+<section class="section">
+  <div class="section-inner">
+    <div class="section-label" data-i18n="s1-label">01 · Context</div>
+    <div class="two-col">
+      <div>
+        <h2 data-i18n="s1-h2">The <em>problem</em></h2>
+        <p data-i18n="s1-p1">University students face significant difficulties concentrating during autonomous study — distracted by digital devices, noise, and inadequate shared spaces. At UTM, the student population is <strong>predominantly non-local</strong>, residing in shared spaces with limited privacy and sensory control.</p>
+        <p data-i18n="s1-p2">XR technologies offer a promising approach by modifying spatial perception. However, <strong>no solutions specifically designed for autonomous study</strong> existed in the literature — creating a clear design gap that this thesis addresses.</p>
+      </div>
+      <!-- Estadísticas del estudio -->
+      <div>
+        <div class="stats">
+          <div class="stat"><span class="stat-n">151</span><span class="stat-d" data-i18n="s1-stat1">students surveyed at 99% confidence</span></div>
+          <div class="stat"><span class="stat-n">3</span><span class="stat-d" data-i18n="s1-stat2">design proposals evaluated</span></div>
+          <div class="stat" style="border-right:none;"><span class="stat-n">60%</span><span class="stat-d" data-i18n="s1-stat3">preferred Mixed Reality in Focus Group</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 02 — METODOLOGÍA
+     ============================================================ -->
+<section class="section" style="background:var(--off);">
+  <div class="section-inner">
+    <div class="section-label" data-i18n="s2-label">02 · Methodology</div>
+    <h2 data-i18n="s2-h2">User-centered <em>design</em> process</h2>
+
+    <!-- Tags de métodos -->
+    <div class="tags">
+      <span class="tag" data-i18n="tag-lr">Literature Review</span>
+      <span class="tag" data-i18n="tag-es">Exploratory Survey (n=9)</span>
+      <span class="tag" data-i18n="tag-sq">Structured Questionnaire (n=151)</span>
+      <span class="tag" data-i18n="tag-ss">Stratified Sampling</span>
+      <span class="tag" data-i18n="tag-tc">Thematic Coding</span>
+      <span class="tag" data-i18n="tag-fg">Focus Group (n=10)</span>
+      <span class="tag" data-i18n="tag-ds">Descriptive Statistics</span>
+      <span class="tag" data-i18n="tag-cd">Conceptual Design</span>
+    </div>
+
+    <!-- 4 pasos del proceso de investigación -->
+    <div class="steps">
+      <!-- Paso 1: Sondeo exploratorio -->
+      <div class="step">
+        <span class="step-num" data-i18n="step1-num">01 · Explore</span>
+        <h3 data-i18n="step1-h3">Exploratory Survey (n=9)</h3>
+        <p data-i18n="step1-p">Validated in the local context the difficulties around self-regulation and study habitability. Identified key pain points: digital distractors, noise, shared spaces, and lack of structured routines.</p>
+      </div>
+      <!-- Paso 2: Cuestionario estructurado -->
+      <div class="step">
+        <span class="step-num" data-i18n="step2-num">02 · Survey</span>
+        <h3 data-i18n="step2-h3">Structured Questionnaire (n=151)</h3>
+        <p data-i18n="step2-p">Applied via Google Forms (Sept–Nov 2025) to students recruited through non-probabilistic stratified sampling by major and semester. Covering housing context, study habits, recurring distractors, and technology expectations. <strong>99% confidence, 10% margin of error.</strong></p>
+      </div>
+      <!-- Paso 3: Derivación de requerimientos y propuestas -->
+      <div class="step">
+        <span class="step-num" data-i18n="step3-num">03 · Design</span>
+        <h3 data-i18n="step3-h3">6 Requirements → 3 Proposals</h3>
+        <p data-i18n="step3-p">Design requirements derived from empirical findings — ensuring proposals respond to real student needs. Three proposals: adapted physical environment (P1), hybrid VR with Google Cardboard (P2), and full Mixed Reality with Meta Quest 3 (P3).</p>
+      </div>
+      <!-- Paso 4: Focus Group de evaluación -->
+      <div class="step">
+        <span class="step-num" data-i18n="step4-num">04 · Evaluate</span>
+        <h3 data-i18n="step4-h3">Focus Group (n=10)</h3>
+        <p data-i18n="step4-p">Conducted at UsaLab · UTM with 10 students from diverse engineering, science, and business programs. Each proposal presented independently via sketches + simulation video. Individual vote with justification after blind evaluation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 03 — TABLA DE REQUERIMIENTOS
+     Trazabilidad: necesidades → estrategias de diseño
+     ============================================================ -->
+<section class="section">
+  <div class="section-inner">
+    <div class="section-label" data-i18n="s3-label">03 · Design Requirements</div>
+    <h2 data-i18n="s3-h2">Needs → <em>Design</em></h2>
+
+    <!-- Tabla de requerimientos funcionales y no funcionales -->
+    <table class="req-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th data-i18n="th-req">Requirement</th>
+          <th data-i18n="th-strategy">Strategy per proposal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>RF1</td><td data-i18n="rf1-req">Distractor stimulus management</td><td data-i18n="rf1-str">Physical panels (P1), visual filtering (P2), digital blocking (P3)</td></tr>
+        <tr><td>RF2</td><td data-i18n="rf2-req">Planning & session closure</td><td data-i18n="rf2-str">Start rituals (P1), temporal guides (P2), XR interfaces (P3)</td></tr>
+        <tr><td>RF3</td><td data-i18n="rf3-req">Focused environment creation</td><td data-i18n="rf3-str">Focal lighting (P1), perceptual isolation (P2, P3)</td></tr>
+        <tr><td>RF4</td><td data-i18n="rf4-req">Physical fatigue reduction</td><td data-i18n="rf4-str">Active pause reminders + light exercises (all proposals)</td></tr>
+        <tr><td>RF5</td><td data-i18n="rf5-req">Study method integration</td><td data-i18n="rf5-str">Printed guides (P1), Pomodoro timers (P2), active feedback (P3)</td></tr>
+        <tr><td>RF6</td><td data-i18n="rf6-req">Sensory condition control</td><td data-i18n="rf6-str">Adjustable lamp (P1), audio guide (P2), dynamic XR control (P3)</td></tr>
+        <tr><td>RNF1</td><td data-i18n="rnf1-req">Progress feedback</td><td data-i18n="rnf1-str">Visual progress indicators and completed goals (P3)</td></tr>
+        <tr><td>RNF2</td><td data-i18n="rnf2-req">Technology implementation</td><td data-i18n="rnf2-str">Immersive headsets and digital platforms (P2, P3)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 04 — RESULTADOS DEL FOCUS GROUP
+     Barras de votación + análisis + cita + estadísticas finales
+     ============================================================ -->
+<section class="section" style="background:var(--off);">
+  <div class="section-inner">
+    <div class="section-label" data-i18n="s4-label">04 · Results</div>
+    <h2 data-i18n="s4-h2">Focus group <em>findings</em></h2>
+
+    <!-- Barras de votación de las 3 propuestas -->
+    <div class="vote-bars">
+      <div class="vote-bar">
+        <div class="vote-n">4</div>
+        <div class="vote-d" data-i18n="votes-of">votes / 10</div>
+        <div style="font-size:0.85rem;color:var(--ink);margin-top:0.5rem;" data-i18n="p1-full">P1 — Physical Environment</div>
+      </div>
+      <div class="vote-bar">
+        <div class="vote-n" style="color:var(--light);">0</div>
+        <div class="vote-d" data-i18n="votes-of">votes / 10</div>
+        <div style="font-size:0.85rem;color:var(--ink);margin-top:0.5rem;" data-i18n="p2-full">P2 — Hybrid VR</div>
+      </div>
+      <div class="vote-bar winner">
+        <div class="vote-n">6</div>
+        <div class="vote-d" data-i18n="votes-of">votes / 10</div>
+        <div style="font-size:0.85rem;color:var(--ink);margin-top:0.5rem;" data-i18n="p3-full">P3 — Mixed Reality</div>
+        <span class="vote-tag" data-i18n="preferred">↑ Preferred</span>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-top:2rem;">
+      <div>
+        <p data-i18n="s4-p1">Students who preferred <strong>Mixed Reality</strong> valued its visual support indicators and ability to manage distractions like noise and family interruptions — even in domestic settings.</p>
+        <p data-i18n="s4-p2">P2 was <strong>unanimously discarded</strong> due to workflow fragmentation. Students estimated MR hardware at ~$1,160 USD — actual market price is ~$290 USD. Even at the inflated estimate, P3 was the top choice.</p>
+        <div style="margin-top:1.5rem;">
+          <a href="https://osf.io/tvnfk/files/2fuj5" target="_blank" class="btn primary" data-i18n="btn-data">View Research Data</a>
+          <a href="index.html" class="btn secondary" data-i18n="btn-back">← Portfolio</a>
+        </div>
+      </div>
+      <div>
+        <!-- Cita del participante del focus group -->
+        <div class="quote">
+          <p data-i18n="quote-text">"Even having space at home, mixed reality could help manage distractions like noise and family interruptions."</p>
+          <span class="quote-source" data-i18n="quote-source">— Focus Group participant, computing engineering · UTM</span>
+        </div>
+        <!-- Estadísticas finales -->
+        <div class="stats" style="margin-top:1rem;">
+          <div class="stat"><span class="stat-n">$290</span><span class="stat-d" data-i18n="final-stat1">actual MR cost vs $1,160 estimated</span></div>
+          <div class="stat"><span class="stat-n">25min</span><span class="stat-d" data-i18n="final-stat2">Pomodoro cycles as HCI fatigue strategy</span></div>
+          <div class="stat" style="border-right:none;"><span class="stat-n">CLIHC</span><span class="stat-d" data-i18n="final-stat3">Accepted 2025</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <span>Luis Mario Espinosa Ortiz · Oaxaca, México</span>
+  <span data-i18n="footer-right">Master's Thesis · CLIHC 2025 · SECIHTI</span>
+</footer>
+
+<!-- ============================================================
+     SCRIPT — Sistema de traducción EN/ES
+     Misma lógica que index.html, tiku.html y lucero.html
+     Para agregar texto: data-i18n="clave" en HTML + entrada en t.en y t.es
+     ============================================================ -->
+<script>
+const t = {
+  en: {
+    /* NAV */
+    'nav-back': '← All Work',
+    /* HERO */
+    'hero-eyebrow': "Master's Thesis · CLIHC 2025",
+    'hero-h1': 'Immersive Environments for <em>Autonomous Study</em>',
+    'hero-sub': 'A user-centered design research process identifying characteristics for immersive environments that support focused study in university students. Mixed-methods study with 151 students; Mixed Reality emerged as the preferred solution.',
+    /* META */
+    'meta-period': 'Period', 'meta-role': 'Role', 'meta-domain': 'Domain', 'meta-funded': 'Funded',
+    'role-value': 'Lead Researcher & Designer',
+    'domain-value': 'XR · Cognitive Ergonomics',
+    'funded-value': 'SECIHTI Scholarship',
+    /* BADGES Y BOTONES */
+    'badge-clihc': '🏛️ Accepted · CLIHC 2025',
+    'badge-thesis': "🎓 Master's Thesis · HCI · UTM",
+    'btn-data': 'View Research Data', 'btn-back': '← Back',
+    /* PROPUESTAS VR */
+    'p1-name': 'Physical Environment', 'p1-detail': 'Adapted physical study space',
+    'p2-name': 'Hybrid VR',
+    'p3-name': 'Mixed Reality ★', 'p3-detail': 'Preferred',
+    /* SECCIÓN 01 */
+    's1-label': '01 · Context', 's1-h2': 'The <em>problem</em>',
+    's1-p1': 'University students face significant difficulties concentrating during autonomous study — distracted by digital devices, noise, and inadequate shared spaces. At UTM, the student population is <strong>predominantly non-local</strong>, residing in shared spaces with limited privacy and sensory control.',
+    's1-p2': 'XR technologies offer a promising approach by modifying spatial perception. However, <strong>no solutions specifically designed for autonomous study</strong> existed in the literature — creating a clear design gap that this thesis addresses.',
+    's1-stat1': 'students surveyed at 99% confidence',
+    's1-stat2': 'design proposals evaluated',
+    's1-stat3': 'preferred Mixed Reality in Focus Group',
+    /* SECCIÓN 02 */
+    's2-label': '02 · Methodology', 's2-h2': 'User-centered <em>design</em> process',
+    'tag-lr': 'Literature Review', 'tag-es': 'Exploratory Survey (n=9)',
+    'tag-sq': 'Structured Questionnaire (n=151)', 'tag-ss': 'Stratified Sampling',
+    'tag-tc': 'Thematic Coding', 'tag-fg': 'Focus Group (n=10)',
+    'tag-ds': 'Descriptive Statistics', 'tag-cd': 'Conceptual Design',
+    'step1-num': '01 · Explore', 'step1-h3': 'Exploratory Survey (n=9)',
+    'step1-p': 'Validated in the local context the difficulties around self-regulation and study habitability. Identified key pain points: digital distractors, noise, shared spaces, and lack of structured routines.',
+    'step2-num': '02 · Survey', 'step2-h3': 'Structured Questionnaire (n=151)',
+    'step2-p': 'Applied via Google Forms (Sept–Nov 2025) to students recruited through non-probabilistic stratified sampling by major and semester. Covering housing context, study habits, recurring distractors, and technology expectations. <strong>99% confidence, 10% margin of error.</strong>',
+    'step3-num': '03 · Design', 'step3-h3': '6 Requirements → 3 Proposals',
+    'step3-p': 'Design requirements derived from empirical findings — ensuring proposals respond to real student needs. Three proposals: adapted physical environment (P1), hybrid VR with Google Cardboard (P2), and full Mixed Reality with Meta Quest 3 (P3).',
+    'step4-num': '04 · Evaluate', 'step4-h3': 'Focus Group (n=10)',
+    'step4-p': 'Conducted at UsaLab · UTM with 10 students from diverse engineering, science, and business programs. Each proposal presented independently via sketches + simulation video. Individual vote with justification after blind evaluation.',
+    /* SECCIÓN 03 — TABLA */
+    's3-label': '03 · Design Requirements', 's3-h2': 'Needs → <em>Design</em>',
+    'th-req': 'Requirement', 'th-strategy': 'Strategy per proposal',
+    'rf1-req': 'Distractor stimulus management', 'rf1-str': 'Physical panels (P1), visual filtering (P2), digital blocking (P3)',
+    'rf2-req': 'Planning & session closure', 'rf2-str': 'Start rituals (P1), temporal guides (P2), XR interfaces (P3)',
+    'rf3-req': 'Focused environment creation', 'rf3-str': 'Focal lighting (P1), perceptual isolation (P2, P3)',
+    'rf4-req': 'Physical fatigue reduction', 'rf4-str': 'Active pause reminders + light exercises (all proposals)',
+    'rf5-req': 'Study method integration', 'rf5-str': 'Printed guides (P1), Pomodoro timers (P2), active feedback (P3)',
+    'rf6-req': 'Sensory condition control', 'rf6-str': 'Adjustable lamp (P1), audio guide (P2), dynamic XR control (P3)',
+    'rnf1-req': 'Progress feedback', 'rnf1-str': 'Visual progress indicators and completed goals (P3)',
+    'rnf2-req': 'Technology implementation', 'rnf2-str': 'Immersive headsets and digital platforms (P2, P3)',
+    /* SECCIÓN 04 */
+    's4-label': '04 · Results', 's4-h2': 'Focus group <em>findings</em>',
+    'votes-of': 'votes / 10',
+    'p1-full': 'P1 — Physical Environment', 'p2-full': 'P2 — Hybrid VR', 'p3-full': 'P3 — Mixed Reality',
+    'preferred': '↑ Preferred',
+    's4-p1': 'Students who preferred <strong>Mixed Reality</strong> valued its visual support indicators and ability to manage distractions like noise and family interruptions — even in domestic settings.',
+    's4-p2': 'P2 was <strong>unanimously discarded</strong> due to workflow fragmentation. Students estimated MR hardware at ~$1,160 USD — actual market price is ~$290 USD. Even at the inflated estimate, P3 was the top choice.',
+    'quote-text': '"Even having space at home, mixed reality could help manage distractions like noise and family interruptions."',
+    'quote-source': '— Focus Group participant, computing engineering · UTM',
+    'final-stat1': 'actual MR cost vs $1,160 estimated',
+    'final-stat2': 'Pomodoro cycles as HCI fatigue strategy',
+    'final-stat3': 'Accepted 2025',
+    /* FOOTER */
+    'footer-right': "Master's Thesis · CLIHC 2025 · SECIHTI",
+  },
+  es: {
+    /* NAV */
+    'nav-back': '← Todo el trabajo',
+    /* HERO */
+    'hero-eyebrow': 'Tesis de Maestría · CLIHC 2025',
+    'hero-h1': 'Entornos Inmersivos para el <em>Estudio Autónomo</em>',
+    'hero-sub': 'Un proceso de diseño centrado en el usuario para identificar características de entornos inmersivos que apoyen el estudio autónomo y enfocado en estudiantes universitarios. Estudio mixto con 151 estudiantes; la Realidad Mixta emergió como la solución preferida.',
+    /* META */
+    'meta-period': 'Periodo', 'meta-role': 'Rol', 'meta-domain': 'Dominio', 'meta-funded': 'Financiamiento',
+    'role-value': 'Investigador y Diseñador Principal',
+    'domain-value': 'XR · Ergonomía Cognitiva',
+    'funded-value': 'Beca SECIHTI',
+    /* BADGES Y BOTONES */
+    'badge-clihc': '🏛️ Aceptado · CLIHC 2025',
+    'badge-thesis': '🎓 Tesis de Maestría · IHC · UTM',
+    'btn-data': 'Ver Datos de Investigación', 'btn-back': '← Volver',
+    /* PROPUESTAS VR */
+    'p1-name': 'Entorno Físico', 'p1-detail': 'Espacio de estudio físico adaptado',
+    'p2-name': 'VR Híbrido',
+    'p3-name': 'Realidad Mixta ★', 'p3-detail': 'Preferida',
+    /* SECCIÓN 01 */
+    's1-label': '01 · Contexto', 's1-h2': 'El <em>problema</em>',
+    's1-p1': 'Los estudiantes universitarios enfrentan grandes dificultades para concentrarse durante el estudio autónomo — distraídos por dispositivos digitales, ruido y espacios compartidos inadecuados. En la UTM, la población estudiantil es <strong>predominantemente foránea</strong>, habitando espacios compartidos con privacidad y control sensorial limitados.',
+    's1-p2': 'Las tecnologías XR ofrecen un enfoque prometedor al modificar la percepción espacial. Sin embargo, <strong>no existían soluciones diseñadas específicamente para el estudio autónomo</strong> en la literatura — creando una brecha de diseño clara que esta tesis aborda.',
+    's1-stat1': 'estudiantes encuestados con 99% de confianza',
+    's1-stat2': 'propuestas de diseño evaluadas',
+    's1-stat3': 'prefirieron Realidad Mixta en el Grupo Focal',
+    /* SECCIÓN 02 */
+    's2-label': '02 · Metodología', 's2-h2': 'Proceso de <em>diseño</em> centrado en el usuario',
+    'tag-lr': 'Revisión de Literatura', 'tag-es': 'Sondeo Exploratorio (n=9)',
+    'tag-sq': 'Cuestionario Estructurado (n=151)', 'tag-ss': 'Muestreo Estratificado',
+    'tag-tc': 'Codificación Temática', 'tag-fg': 'Grupo Focal (n=10)',
+    'tag-ds': 'Estadística Descriptiva', 'tag-cd': 'Diseño Conceptual',
+    'step1-num': '01 · Explorar', 'step1-h3': 'Sondeo Exploratorio (n=9)',
+    'step1-p': 'Se validaron en el contexto local las dificultades de autorregulación y habitabilidad reportadas en la literatura. Se identificaron puntos de dolor clave: distractores digitales, ruido, espacios compartidos y falta de rutinas estructuradas.',
+    'step2-num': '02 · Encuesta', 'step2-h3': 'Cuestionario Estructurado (n=151)',
+    'step2-p': 'Aplicado vía Google Forms (sept–nov 2025) a estudiantes reclutados mediante muestreo estratificado no probabilístico por carrera y semestre. Abarcó contexto habitacional, hábitos de estudio, distractores recurrentes y expectativas tecnológicas. <strong>99% de confianza, 10% de margen de error.</strong>',
+    'step3-num': '03 · Diseñar', 'step3-h3': '6 Requerimientos → 3 Propuestas',
+    'step3-p': 'Requerimientos de diseño derivados de los hallazgos empíricos — garantizando que las propuestas respondan a necesidades reales de los estudiantes. Tres propuestas: entorno físico adaptado (P1), VR híbrido con Google Cardboard (P2) y Realidad Mixta completa con Meta Quest 3 (P3).',
+    'step4-num': '04 · Evaluar', 'step4-h3': 'Grupo Focal (n=10)',
+    'step4-p': 'Realizado en el UsaLab · UTM con 10 estudiantes de diversas áreas de ingeniería, ciencias y ciencias empresariales. Cada propuesta presentada de forma independiente mediante bocetos + video simulado. Votación individual con justificación tras evaluación ciega.',
+    /* SECCIÓN 03 — TABLA */
+    's3-label': '03 · Requerimientos de Diseño', 's3-h2': 'Necesidades → <em>Diseño</em>',
+    'th-req': 'Requerimiento', 'th-strategy': 'Estrategia por propuesta',
+    'rf1-req': 'Gestión de estímulos distractores', 'rf1-str': 'Paneles físicos (P1), filtrado visual (P2), bloqueo digital (P3)',
+    'rf2-req': 'Apoyo a planificación y cierre', 'rf2-str': 'Rituales de inicio (P1), guía temporal (P2), interfaces XR (P3)',
+    'rf3-req': 'Creación de entorno enfocado', 'rf3-str': 'Iluminación focal (P1), aislamiento perceptual (P2, P3)',
+    'rf4-req': 'Reducción de fatiga física', 'rf4-str': 'Recordatorios de pausas activas + ejercicios ligeros (todas las propuestas)',
+    'rf5-req': 'Integración de métodos de estudio', 'rf5-str': 'Guías impresas (P1), cronómetros Pomodoro (P2), retroalimentación activa (P3)',
+    'rf6-req': 'Control de condiciones sensoriales', 'rf6-str': 'Lámpara regulable (P1), guía de audio (P2), control dinámico XR (P3)',
+    'rnf1-req': 'Retroalimentación de progreso', 'rnf1-str': 'Indicadores visuales de avance y metas cumplidas (P3)',
+    'rnf2-req': 'Implementación tecnológica', 'rnf2-str': 'Visores inmersivos y plataformas digitales (P2, P3)',
+    /* SECCIÓN 04 */
+    's4-label': '04 · Resultados', 's4-h2': 'Hallazgos del <em>grupo focal</em>',
+    'votes-of': 'votos / 10',
+    'p1-full': 'P1 — Entorno Físico', 'p2-full': 'P2 — VR Híbrido', 'p3-full': 'P3 — Realidad Mixta',
+    'preferred': '↑ Preferida',
+    's4-p1': 'Los estudiantes que prefirieron la <strong>Realidad Mixta</strong> valoraron sus indicadores de apoyo visual y su capacidad para gestionar distracciones como el ruido y las interrupciones familiares — incluso en entornos domésticos.',
+    's4-p2': 'La P2 fue <strong>descartada de forma unánime</strong> por fragmentar el flujo de trabajo. Los estudiantes estimaron el hardware de RM en ~$1,160 USD — el precio real de mercado es ~$290 USD. Incluso con esa estimación inflada, P3 fue la más elegida.',
+    'quote-text': '"Incluso teniendo espacio en casa, la realidad mixta podría ayudar a gestionar distracciones como el ruido y las interrupciones familiares."',
+    'quote-source': '— Participante del Grupo Focal, ingeniería computacional · UTM',
+    'final-stat1': 'costo real de RM vs $1,160 estimado',
+    'final-stat2': 'ciclos Pomodoro como estrategia de IHC para la fatiga',
+    'final-stat3': 'Aceptado 2025',
+    /* FOOTER */
+    'footer-right': 'Tesis de Maestría · CLIHC 2025 · SECIHTI',
+  }
+};
+
+let lang = localStorage.getItem('lang') || 'en';
+function setLang(l) {
+  lang = l; localStorage.setItem('lang', l);
+  document.body.classList.add('switching');
+  setTimeout(() => {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const k = el.getAttribute('data-i18n');
+      if (t[l][k] !== undefined) el.innerHTML = t[l][k];
+    });
+    document.documentElement.lang = l;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent === l.toUpperCase()));
+    document.body.classList.remove('switching');
+  }, 150);
+}
+if (lang === 'es') setLang('es');
+</script>
+
+</body>
+</html>

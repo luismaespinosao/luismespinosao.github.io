@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tíku — Case Study | Luis Mario Espinosa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<!-- ============================================================
+     STYLES
+     - Variables de color y tipografía globales
+     - Nav fijo con backdrop blur
+     - Hero: texto + meta grid + badges + botones
+     - Secciones: fondo blanco alternando con --off
+     - Grids de 2 columnas para contexto y proceso
+     - Tarjetas de pasos del proceso (steps)
+     - Galería de fotos con hover zoom
+     - Tags de métodos
+     - Cita destacada (quote)
+     - Barras de progreso
+     - Footer
+     - Transición suave para cambio de idioma
+     - Responsive mobile (max-width: 800px)
+     ============================================================ -->
+<style>
+  /* === VARIABLES GLOBALES === */
+  :root{--white:#ffffff;--off:#f7f5f2;--ink:#111111;--gray:#888888;--light:#e8e4de;--accent:#c95c2e;--sans:'DM Sans',sans-serif;--serif:'DM Serif Display',Georgia,serif;}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--white);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;}
+
+  /* === NAV === */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1.5rem 3rem;background:rgba(255,255,255,0.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--light);}
+  .nav-name{font-family:var(--serif);font-size:1.05rem;color:var(--ink);text-decoration:none;}
+  .nav-right{display:flex;align-items:center;gap:2rem;}
+
+  /* === BOTÓN DE IDIOMA === */
+  .lang-switch{display:flex;border:1px solid var(--light);border-radius:2px;overflow:hidden;}
+  .lang-btn{font-size:0.72rem;font-weight:500;letter-spacing:0.08em;padding:0.35rem 0.75rem;background:none;border:none;cursor:pointer;color:var(--gray);transition:all 0.2s;font-family:var(--sans);}
+  .lang-btn.active{background:var(--ink);color:var(--white);}
+  .lang-btn:hover:not(.active){background:var(--off);color:var(--ink);}
+  .nav-back{font-size:0.78rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray);text-decoration:none;transition:color 0.2s;}
+  .nav-back:hover{color:var(--ink);}
+
+  /* === HERO === */
+  .hero{padding:10rem 3rem 0;max-width:820px;}
+  .hero-eyebrow{font-size:0.75rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:1.25rem;}
+  h1{font-family:var(--serif);font-size:clamp(3.5rem,7vw,6rem);font-weight:400;line-height:1.05;margin-bottom:1.25rem;}
+  h1 em{font-style:italic;color:var(--gray);}
+  .hero-sub{font-size:1.05rem;color:var(--gray);line-height:1.8;max-width:560px;margin-bottom:2.5rem;}
+
+  /* === META GRID (tabla de info debajo del título) === */
+  .meta-row{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--light);border-left:1px solid var(--light);margin-bottom:2rem;}
+  .meta-cell{padding:1.25rem 2rem;border-right:1px solid var(--light);border-bottom:1px solid var(--light);}
+  .meta-label{font-size:0.68rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#bbb;display:block;margin-bottom:0.3rem;}
+  .meta-value{font-size:0.88rem;color:var(--ink);}
+
+  /* === BADGES Y BOTONES === */
+  .badges{display:flex;flex-wrap:wrap;gap:0.75rem;margin-bottom:2.5rem;}
+  .badge{font-size:0.72rem;font-weight:500;letter-spacing:0.06em;padding:0.5rem 1rem;border:1.5px solid;border-radius:2px;}
+  .badge.accent{border-color:var(--accent);color:var(--accent);}
+  .badge.dark{border-color:var(--light);color:var(--gray);}
+  .btn{display:inline-block;font-size:0.78rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.9rem 2rem;text-decoration:none;border:1.5px solid;border-radius:2px;transition:all 0.2s;margin-right:0.75rem;margin-bottom:0.75rem;}
+  .btn.primary{background:var(--ink);border-color:var(--ink);color:var(--white);}
+  .btn.primary:hover{background:transparent;color:var(--ink);}
+  .btn.secondary{background:transparent;border-color:var(--light);color:var(--gray);}
+  .btn.secondary:hover{border-color:var(--ink);color:var(--ink);}
+
+  /* === IMAGEN HERO (mockup de la app) === */
+  .hero-img{width:100%;max-height:620px;overflow:hidden;background:#f0ede9;}
+  .hero-img img{width:100%;height:100%;object-fit:contain;display:block;padding:3rem 4rem;}
+
+  /* === SECCIONES === */
+  .section{padding:5rem 3rem;border-top:1px solid var(--light);}
+  .section-inner{max-width:1000px;margin:0 auto;}
+  .section-label{font-size:0.72rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#bbb;margin-bottom:2.5rem;display:flex;align-items:center;gap:1rem;}
+  .section-label::after{content:'';flex:1;height:1px;background:var(--light);}
+  h2{font-family:var(--serif);font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:400;line-height:1.15;margin-bottom:1.5rem;}
+  h2 em{font-style:italic;color:var(--gray);}
+  h3{font-family:var(--serif);font-size:1.2rem;font-weight:400;margin-bottom:0.75rem;}
+  p{color:var(--gray);line-height:1.85;margin-bottom:1rem;}
+  p strong{color:var(--ink);font-weight:500;}
+
+  /* === LAYOUTS DE DOS Y TRES COLUMNAS === */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+  .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;background:var(--light);}
+  .col-card{background:var(--white);padding:2rem;}
+  .col-label{font-size:0.68rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:0.75rem;display:block;}
+
+  /* === ESTADÍSTICAS === */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--light);margin:2rem 0;}
+  .stat{padding:2rem;border-right:1px solid var(--light);text-align:center;}
+  .stat:last-child{border-right:none;}
+  .stat-n{font-family:var(--serif);font-size:3.5rem;font-weight:400;color:var(--ink);line-height:1;display:block;margin-bottom:0.5rem;}
+  .stat-d{font-size:0.78rem;color:var(--gray);line-height:1.5;}
+
+  /* === PASOS DEL PROCESO (2x2 grid) === */
+  .steps{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--light);margin:2rem 0;}
+  .step{background:var(--white);padding:2.5rem;}
+  .step-num{font-size:0.68rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:0.75rem;display:block;}
+
+  /* === GALERÍA DE FOTOS === */
+  .photo-grid{display:grid;gap:2px;background:var(--light);margin:2rem 0;}
+  .photo-grid.cols-2{grid-template-columns:1fr 1fr;}
+  .photo-grid.cols-3{grid-template-columns:1fr 1fr 1fr;}
+  .photo-wrap{overflow:hidden;background:var(--off);}
+  .photo-wrap.ratio-4-3{aspect-ratio:4/3;}
+  .photo-wrap.ratio-3-4{aspect-ratio:3/4;}
+  .photo-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s ease;}
+  .photo-wrap:hover img{transform:scale(1.03);}
+  .photo-cap{font-size:0.72rem;color:var(--gray);padding:0.6rem 0;letter-spacing:0.03em;}
+
+  /* === TAGS DE MÉTODOS === */
+  .tags{display:flex;flex-wrap:wrap;gap:0.4rem;margin:1.5rem 0;}
+  .tag{font-size:0.65rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;padding:0.3rem 0.75rem;border:1px solid var(--light);color:var(--gray);border-radius:2px;}
+
+  /* === CITA DESTACADA === */
+  .quote{border-left:3px solid var(--accent);padding:1.5rem 2rem;margin:2rem 0;background:var(--off);}
+  .quote p{font-family:var(--serif);font-size:1.1rem;font-style:italic;color:var(--ink);margin:0;line-height:1.6;}
+  .quote-source{font-size:0.72rem;color:var(--gray);margin-top:0.75rem;display:block;font-style:normal;}
+
+  /* === BARRAS DE PROGRESO === */
+  .progress-list{display:flex;flex-direction:column;gap:1.25rem;margin:1.5rem 0;}
+  .progress-header{display:flex;justify-content:space-between;font-size:0.78rem;color:var(--gray);margin-bottom:0.4rem;}
+  .progress-header span{color:var(--ink);font-weight:500;}
+  .bar{height:3px;background:var(--light);}
+  .bar-fill{height:100%;background:var(--ink);}
+
+  /* === FOOTER === */
+  footer{padding:2rem 3rem;border-top:1px solid var(--light);display:flex;justify-content:space-between;align-items:center;}
+  footer span{font-size:0.75rem;color:#bbb;}
+
+  /* === TRANSICIÓN CAMBIO DE IDIOMA === */
+  [data-i18n]{transition:opacity 0.15s ease;}
+  body.switching [data-i18n]{opacity:0;}
+
+  /* === ANIMACIÓN ENTRADA === */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  .hero>*{animation:fadeUp 0.6s ease both;}
+  .hero>*:nth-child(2){animation-delay:0.08s;}
+  .hero>*:nth-child(3){animation-delay:0.16s;}
+
+  /* === RESPONSIVE === */
+  @media(max-width:800px){
+    nav{padding:1.25rem 1.5rem;}
+    .hero{padding:7rem 1.5rem 0;}
+    .section{padding:3rem 1.5rem;}
+    .two-col,.steps,.three-col{grid-template-columns:1fr;}
+    .photo-grid.cols-2,.photo-grid.cols-3{grid-template-columns:1fr;}
+    .stats{grid-template-columns:1fr;}
+    .stat{border-right:none;border-bottom:1px solid var(--light);}
+    footer{flex-direction:column;gap:0.5rem;padding:1.5rem;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAV — Nombre + botón volver + switch de idioma
+     ============================================================ -->
+<nav>
+  <a href="index.html" class="nav-name">Luis Mario Espinosa</a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-back" data-i18n="nav-back">← All Work</a>
+    <div class="lang-switch">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     HERO — Eyebrow + título + subtítulo + meta grid + badges + botones
+     ============================================================ -->
+<div class="hero">
+  <!-- Etiqueta de categoría -->
+  <div class="hero-eyebrow" data-i18n="hero-eyebrow">Case Study · 2024–2025</div>
+
+  <!-- Título principal -->
+  <h1>Tíku</h1>
+
+  <!-- Descripción corta -->
+  <p class="hero-sub" data-i18n="hero-sub">Emotional technology for rethinking men's role in society. A mobile app connected to smart wristbands, designed to help young men in Oaxaca identify and manage their emotions — safely, without stigma. The name means <em>brother</em> in Mixtec.</p>
+
+  <!-- Meta: año, rol, dominio, plataforma -->
+  <div class="meta-row">
+    <div class="meta-cell"><span class="meta-label" data-i18n="meta-year">Year</span><span class="meta-value">2024–2025</span></div>
+    <div class="meta-cell"><span class="meta-label" data-i18n="meta-role">Role</span><span class="meta-value" data-i18n="role-value">Lead UX Researcher & Designer</span></div>
+    <div class="meta-cell"><span class="meta-label" data-i18n="meta-domain">Domain</span><span class="meta-value" data-i18n="domain-value">Health & Emotional Well-being</span></div>
+    <div class="meta-cell"><span class="meta-label" data-i18n="meta-platform">Platform</span><span class="meta-value" data-i18n="platform-value">Mobile + Wearable</span></div>
+  </div>
+
+  <!-- Reconocimientos como badges -->
+  <div class="badges">
+    <span class="badge accent">🏆 Finalist · HCI International 2025 · Sweden</span>
+    <span class="badge dark">Flutter · NLP · BERT · Django</span>
+  </div>
+
+  <!-- Botones de acción -->
+  <div>
+    <a href="https://www.figma.com/proto/KAjO1i5IcPTv5fbQDBVxBj/Untitled?node-id=1-306&starting-point-node-id=1%3A14" target="_blank" class="btn primary" data-i18n="btn-prototype">View Prototype</a>
+    <a href="index.html" class="btn secondary" data-i18n="btn-back">← Back</a>
+  </div>
+</div>
+
+<!-- ============================================================
+     IMAGEN HERO — Mockup completo de la app Tíku
+     ============================================================ -->
+<div class="hero-img">
+  <img src="img/tiku-app.jpg" alt="Tíku app interfaces — avatar selection, emotion check-in, conversation, reward">
+</div>
+
+<!-- ============================================================
+     SECCIÓN 01 — CONTEXTO Y PROBLEMA
+     ============================================================ -->
+<section class="section">
+  <div class="section-inner">
+    <!-- Número de sección -->
+    <div class="section-label" data-i18n="s1-label">01 · Context</div>
+    <div class="two-col">
+      <div>
+        <!-- Título y descripción del problema -->
+        <h2 data-i18n="s1-h2">The <em>problem</em></h2>
+        <p data-i18n="s1-p1">In Oaxaca, cultural traditions reinforce traditional masculinities — where anger is often the only socially acceptable emotion for men, and emotional expression is deeply stigmatized.</p>
+        <p data-i18n="s1-p2"><strong>Men aged 15–29 have the highest suicide rate in México</strong>, with 16.2 cases per 100,000 inhabitants (INEGI, 2022). A survey in Mexico City revealed that 67% of men are unfamiliar with "new masculinities."</p>
+        <p data-i18n="s1-p3">Existing mental health tools weren't designed with this cultural context in mind. They felt clinical, stigmatizing, or simply irrelevant to young men in Oaxaca.</p>
+      </div>
+      <!-- Estadísticas clave -->
+      <div>
+        <div class="stats">
+          <div class="stat"><span class="stat-n">70%</span><span class="stat-d" data-i18n="stat1">of global suicides are men</span></div>
+          <div class="stat"><span class="stat-n">67%</span><span class="stat-d" data-i18n="stat2">of Mexican men unfamiliar with "new masculinities"</span></div>
+          <div class="stat" style="border-right:none;"><span class="stat-n">43.8%</span><span class="stat-d" data-i18n="stat3">of students believed tech could help with emotional management</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 02 — PROCESO DE DISEÑO
+     ============================================================ -->
+<section class="section" style="background:var(--off);">
+  <div class="section-inner">
+    <div class="section-label" data-i18n="s2-label">02 · Process</div>
+    <h2 data-i18n="s2-h2">Design <em>Thinking</em> approach</h2>
+
+    <!-- Tags de métodos usados -->
+    <div class="tags">
+      <span class="tag" data-i18n="tag-ci">Contextual Inquiry</span>
+      <span class="tag" data-i18n="tag-fg">Focus Group</span>
+      <span class="tag" data-i18n="tag-pd">Persona Development</span>
+      <span class="tag" data-i18n="tag-em">Empathy Mapping</span>
+      <span class="tag">Wizard of Oz</span>
+      <span class="tag">A/B Testing</span>
+      <span class="tag" data-i18n="tag-ut">Usability Testing (n=8)</span>
+      <span class="tag" data-i18n="tag-ta">Thematic Analysis</span>
+    </div>
+
+    <!-- 4 pasos del proceso -->
+    <div class="steps">
+      <!-- Paso 1: Empatizar -->
+      <div class="step">
+        <span class="step-num" data-i18n="step1-num">01 · Empathize</span>
+        <h3 data-i18n="step1-h3">Contextual Inquiry</h3>
+        <p data-i18n="step1-p">Conducted a contextual study at a university in Huajuapan de León examining emotional literacy among local youth. Interviewed psychologists to understand cultural barriers specific to Oaxaca's context. Students reported difficulty identifying emotions due to cultural norms around masculinity.</p>
+      </div>
+      <!-- Paso 2: Definir -->
+      <div class="step">
+        <span class="step-num" data-i18n="step2-num">02 · Define</span>
+        <h3 data-i18n="step2-h3">Focus Group</h3>
+        <p data-i18n="step2-p">8 engineering students aged 20–24 in the university's Usability Laboratory identified key preferences. Users preferred <strong>non-human avatars</strong> (animals, robots, abstract figures) and stressed the importance of culturally appropriate visual language.</p>
+      </div>
+      <!-- Paso 3: Idear -->
+      <div class="step">
+        <span class="step-num" data-i18n="step3-num">03 · Ideate</span>
+        <h3 data-i18n="step3-h3">Brainstorming & Storyboarding</h3>
+        <p data-i18n="step3-p">Mind map sessions generated concepts evaluated on feasibility, cultural relevance, and social impact. Storyboarding validated the concept with participants of varying technical backgrounds. Result: Tíku — a mobile app + smart wristband with customizable avatars and emotional missions.</p>
+      </div>
+      <!-- Paso 4: Prototipar y probar -->
+      <div class="step">
+        <span class="step-num" data-i18n="step4-num">04 · Test</span>
+        <h3 data-i18n="step4-h3">3 Iterations · Lo-Fi to Hi-Fi</h3>
+        <p data-i18n="step4-p">Wizard of Oz tests assessed conversation flow. A/B tests with 8 users evaluated color, fonts, and avatars. Final usability testing with 5 users across 6 task scenarios. Key change: lighter palettes, shorter dialogues, youth-appropriate language.</p>
+      </div>
+    </div>
+
+    <!-- Fotos del proceso: focus group, wireframes, lab -->
+    <div class="photo-grid cols-3">
+      <div>
+        <div class="photo-wrap ratio-4-3"><img src="img/tiku-focusgroup.jpg" alt="Focus group session"></div>
+        <p class="photo-cap" data-i18n="cap-fg">Focus group · Contextual inquiry with students</p>
+      </div>
+      <div>
+        <div class="photo-wrap ratio-4-3"><img src="img/tiku-wireframes.jpg" alt="Paper wireframe review"></div>
+        <p class="photo-cap" data-i18n="cap-wf">Paper wireframes · Early co-design session</p>
+      </div>
+      <div>
+        <div class="photo-wrap ratio-4-3"><img src="img/tiku-lab.jpg" alt="Usability lab session"></div>
+        <p class="photo-cap" data-i18n="cap-lab">UsaLab · Storyboard development</p>
+      </div>
+    </div>
+
+    <!-- Fotos del proceso: expertos y pantallas -->
+    <div class="photo-grid cols-2">
+      <div>
+        <div class="photo-wrap ratio-4-3"><img src="img/tiku-expert.jpg" alt="Expert consultation session"></div>
+        <p class="photo-cap" data-i18n="cap-exp">Expert consultation · Wizard of Oz remote testing</p>
+      </div>
+      <div>
+        <div class="photo-wrap ratio-4-3" style="background:#f5f0eb;">
+          <img src="img/tiku-screens.jpg" alt="App prototype screens" style="object-fit:contain;padding:1rem;">
+        </div>
+        <p class="photo-cap" data-i18n="cap-screens">Hi-fi prototype · Final app screens</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 03 — HALLAZGOS CLAVE
+     ============================================================ -->
+<section class="section">
+  <div class="section-inner">
+    <div class="section-label" data-i18n="s3-label">03 · Key Findings</div>
+    <h2 data-i18n="s3-h2">What we <em>learned</em></h2>
+
+    <!-- 3 hallazgos principales -->
+    <div class="three-col">
+      <div class="col-card">
+        <span class="col-label" data-i18n="f1-label">Avatar Design</span>
+        <p style="font-size:0.9rem;" data-i18n="f1-p">Users rejected human avatars, especially male ones. Robot and animal avatars created psychological distance that made emotional expression safer and less stigmatized.</p>
+      </div>
+      <div class="col-card">
+        <span class="col-label" data-i18n="f2-label">Color & Language</span>
+        <p style="font-size:0.9rem;" data-i18n="f2-p">Light, warm palettes were preferred to avoid associations with sadness. Informal, peer-like language reduced stigma. "Bro" was seen as unnatural — refined in V2.</p>
+      </div>
+      <div class="col-card">
+        <span class="col-label" data-i18n="f3-label">Gamification</span>
+        <p style="font-size:0.9rem;" data-i18n="f3-p">Reward systems (unlockable avatar customizations) significantly increased motivation to engage with emotional exercises and return to the app consistently.</p>
+      </div>
+    </div>
+
+    <!-- Cita de usuario -->
+    <div class="quote">
+      <p data-i18n="quote-text">"Users felt more comfortable sharing emotions with women due to fear of judgment from men — and they strongly preferred non-human avatars as emotional companions."</p>
+      <span class="quote-source" data-i18n="quote-source">— Focus Group Finding, Usability Laboratory · UTM</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 04 — RESULTADOS E IMPACTO
+     ============================================================ -->
+<section class="section" style="background:var(--off);">
+  <div class="section-inner">
+    <div class="section-label" data-i18n="s4-label">04 · Results</div>
+    <div class="two-col">
+      <div>
+        <h2 data-i18n="s4-h2">Outcomes & <em>impact</em></h2>
+        <p data-i18n="s4-p1">Three prototype iterations with 38 total activities, achieving a <strong>100% task completion rate</strong>. User satisfaction improved from 65% to 82% across iterations.</p>
+        <p data-i18n="s4-p2">The project aligns with four UN SDGs: Goal 3 (Good Health), Goal 5 (Gender Equality), Goal 10 (Reduced Inequalities), and Goal 16 (Peace & Justice).</p>
+        <p data-i18n="s4-p3">Selected as <strong>finalist at HCI International 2025</strong> in Gothenburg, Sweden — one of the most prestigious HCI conferences globally.</p>
+        <div style="margin-top:2rem;">
+          <a href="https://www.figma.com/proto/KAjO1i5IcPTv5fbQDBVxBj/Untitled?node-id=1-306&starting-point-node-id=1%3A14" target="_blank" class="btn primary" data-i18n="btn-prototype">Try the Prototype</a>
+          <a href="index.html" class="btn secondary" data-i18n="btn-back">← Portfolio</a>
+        </div>
+      </div>
+      <div>
+        <!-- Métricas clave en grid 2x2 -->
+        <div class="stats" style="grid-template-columns:1fr 1fr;margin-top:0;">
+          <div class="stat"><span class="stat-n">100%</span><span class="stat-d" data-i18n="r-stat1">task completion (38 activities)</span></div>
+          <div class="stat" style="border-right:none;"><span class="stat-n">82%</span><span class="stat-d" data-i18n="r-stat2">satisfaction V3 (up from 65%)</span></div>
+          <div class="stat" style="border-top:1px solid var(--light);"><span class="stat-n">8</span><span class="stat-d" data-i18n="r-stat3">users in usability testing</span></div>
+          <div class="stat" style="border-right:none;border-top:1px solid var(--light);"><span class="stat-n">3</span><span class="stat-d" data-i18n="r-stat4">prototype iterations</span></div>
+        </div>
+        <!-- Cita del participante -->
+        <div class="quote" style="margin-top:1.5rem;">
+          <p data-i18n="quote2-text">"The only thing I truly wish is for someone to sincerely ask, 'How are you?' and for me to feel genuinely heard."</p>
+          <span class="quote-source" data-i18n="quote2-source">— Study participant</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <span>Luis Mario Espinosa Ortiz · Oaxaca, México</span>
+  <span data-i18n="footer-right">Tíku · HCI International 2025 Finalist</span>
+</footer>
+
+<!-- ============================================================
+     SCRIPT — Sistema de traducción EN/ES
+     Cómo funciona:
+     1. Cada elemento con data-i18n="clave" recibe el texto del objeto `t`
+     2. setLang() hace fade out → actualiza textos → fade in
+     3. La preferencia se guarda en localStorage
+     Para agregar texto nuevo:
+       - Pon data-i18n="mi-clave" en el HTML
+       - Agrega "mi-clave": "texto en inglés" en t.en
+       - Agrega "mi-clave": "texto en español" en t.es
+     ============================================================ -->
+<script>
+const t = {
+  en: {
+    /* NAV */
+    'nav-back': '← All Work',
+    /* HERO */
+    'hero-eyebrow': 'Case Study · 2024–2025',
+    'hero-sub': 'Emotional technology for rethinking men\'s role in society. A mobile app connected to smart wristbands, designed to help young men in Oaxaca identify and manage their emotions — safely, without stigma. The name means <em>brother</em> in Mixtec.',
+    /* META */
+    'meta-year': 'Year', 'meta-role': 'Role', 'meta-domain': 'Domain', 'meta-platform': 'Platform',
+    'role-value': 'Lead UX Researcher & Designer',
+    'domain-value': 'Health & Emotional Well-being',
+    'platform-value': 'Mobile + Wearable',
+    /* BOTONES */
+    'btn-prototype': 'View Prototype', 'btn-back': '← Back',
+    /* SECCIÓN 01 */
+    's1-label': '01 · Context', 's1-h2': 'The <em>problem</em>',
+    's1-p1': 'In Oaxaca, cultural traditions reinforce traditional masculinities — where anger is often the only socially acceptable emotion for men, and emotional expression is deeply stigmatized.',
+    's1-p2': '<strong>Men aged 15–29 have the highest suicide rate in México</strong>, with 16.2 cases per 100,000 inhabitants (INEGI, 2022). A survey in Mexico City revealed that 67% of men are unfamiliar with "new masculinities."',
+    's1-p3': 'Existing mental health tools weren\'t designed with this cultural context in mind. They felt clinical, stigmatizing, or simply irrelevant to young men in Oaxaca.',
+    'stat1': 'of global suicides are men',
+    'stat2': 'of Mexican men unfamiliar with "new masculinities"',
+    'stat3': 'of students believed tech could help with emotional management',
+    /* SECCIÓN 02 */
+    's2-label': '02 · Process', 's2-h2': 'Design <em>Thinking</em> approach',
+    'tag-ci': 'Contextual Inquiry', 'tag-fg': 'Focus Group', 'tag-pd': 'Persona Development',
+    'tag-em': 'Empathy Mapping', 'tag-ut': 'Usability Testing (n=8)', 'tag-ta': 'Thematic Analysis',
+    'step1-num': '01 · Empathize', 'step1-h3': 'Contextual Inquiry',
+    'step1-p': 'Conducted a contextual study at a university in Huajuapan de León examining emotional literacy among local youth. Interviewed psychologists to understand cultural barriers specific to Oaxaca\'s context. Students reported difficulty identifying emotions due to cultural norms around masculinity.',
+    'step2-num': '02 · Define', 'step2-h3': 'Focus Group',
+    'step2-p': '8 engineering students aged 20–24 in the university\'s Usability Laboratory identified key preferences. Users preferred <strong>non-human avatars</strong> (animals, robots, abstract figures) and stressed the importance of culturally appropriate visual language.',
+    'step3-num': '03 · Ideate', 'step3-h3': 'Brainstorming & Storyboarding',
+    'step3-p': 'Mind map sessions generated concepts evaluated on feasibility, cultural relevance, and social impact. Storyboarding validated the concept with participants of varying technical backgrounds. Result: Tíku — a mobile app + smart wristband with customizable avatars and emotional missions.',
+    'step4-num': '04 · Test', 'step4-h3': '3 Iterations · Lo-Fi to Hi-Fi',
+    'step4-p': 'Wizard of Oz tests assessed conversation flow. A/B tests with 8 users evaluated color, fonts, and avatars. Final usability testing with 5 users across 6 task scenarios. Key change: lighter palettes, shorter dialogues, youth-appropriate language.',
+    'cap-fg': 'Focus group · Contextual inquiry with students',
+    'cap-wf': 'Paper wireframes · Early co-design session',
+    'cap-lab': 'UsaLab · Storyboard development',
+    'cap-exp': 'Expert consultation · Wizard of Oz remote testing',
+    'cap-screens': 'Hi-fi prototype · Final app screens',
+    /* SECCIÓN 03 */
+    's3-label': '03 · Key Findings', 's3-h2': 'What we <em>learned</em>',
+    'f1-label': 'Avatar Design', 'f1-p': 'Users rejected human avatars, especially male ones. Robot and animal avatars created psychological distance that made emotional expression safer and less stigmatized.',
+    'f2-label': 'Color & Language', 'f2-p': 'Light, warm palettes were preferred to avoid associations with sadness. Informal, peer-like language reduced stigma. "Bro" was seen as unnatural — refined in V2.',
+    'f3-label': 'Gamification', 'f3-p': 'Reward systems (unlockable avatar customizations) significantly increased motivation to engage with emotional exercises and return to the app consistently.',
+    'quote-text': '"Users felt more comfortable sharing emotions with women due to fear of judgment from men — and they strongly preferred non-human avatars as emotional companions."',
+    'quote-source': '— Focus Group Finding, Usability Laboratory · UTM',
+    /* SECCIÓN 04 */
+    's4-label': '04 · Results', 's4-h2': 'Outcomes & <em>impact</em>',
+    's4-p1': 'Three prototype iterations with 38 total activities, achieving a <strong>100% task completion rate</strong>. User satisfaction improved from 65% to 82% across iterations.',
+    's4-p2': 'The project aligns with four UN SDGs: Goal 3 (Good Health), Goal 5 (Gender Equality), Goal 10 (Reduced Inequalities), and Goal 16 (Peace & Justice).',
+    's4-p3': 'Selected as <strong>finalist at HCI International 2025</strong> in Gothenburg, Sweden — one of the most prestigious HCI conferences globally.',
+    'r-stat1': 'task completion (38 activities)', 'r-stat2': 'satisfaction V3 (up from 65%)',
+    'r-stat3': 'users in usability testing', 'r-stat4': 'prototype iterations',
+    'quote2-text': '"The only thing I truly wish is for someone to sincerely ask, \'How are you?\' and for me to feel genuinely heard."',
+    'quote2-source': '— Study participant',
+    /* FOOTER */
+    'footer-right': 'Tíku · HCI International 2025 Finalist',
+  },
+  es: {
+    /* NAV */
+    'nav-back': '← Todo el trabajo',
+    /* HERO */
+    'hero-eyebrow': 'Caso de Estudio · 2024–2025',
+    'hero-sub': 'Tecnología emocional para repensar el rol del hombre en la sociedad. App móvil conectada a pulseras inteligentes, diseñada para ayudar a jóvenes de Oaxaca a identificar y gestionar sus emociones — de forma segura, sin estigma. El nombre significa <em>hermano</em> en mixteco.',
+    /* META */
+    'meta-year': 'Año', 'meta-role': 'Rol', 'meta-domain': 'Dominio', 'meta-platform': 'Plataforma',
+    'role-value': 'Investigador y Diseñador UX Principal',
+    'domain-value': 'Salud y Bienestar Emocional',
+    'platform-value': 'Móvil + Wearable',
+    /* BOTONES */
+    'btn-prototype': 'Ver Prototipo', 'btn-back': '← Volver',
+    /* SECCIÓN 01 */
+    's1-label': '01 · Contexto', 's1-h2': 'El <em>problema</em>',
+    's1-p1': 'En Oaxaca, las tradiciones culturales refuerzan las masculinidades tradicionales — donde la ira es a menudo la única emoción socialmente aceptable para los hombres, y la expresión emocional está profundamente estigmatizada.',
+    's1-p2': '<strong>Los hombres de 15 a 29 años tienen la tasa de suicidio más alta en México</strong>, con 16.2 casos por cada 100,000 habitantes (INEGI, 2022). Una encuesta en Ciudad de México reveló que el 67% de los hombres no conoce el concepto de "nuevas masculinidades".',
+    's1-p3': 'Las herramientas de salud mental existentes no fueron diseñadas con este contexto cultural en mente. Se sentían clínicas, estigmatizadoras o simplemente irrelevantes para los jóvenes de Oaxaca.',
+    'stat1': 'de los suicidios globales son hombres',
+    'stat2': 'de hombres mexicanos desconoce las "nuevas masculinidades"',
+    'stat3': 'de estudiantes creen que la tecnología puede ayudar en la gestión emocional',
+    /* SECCIÓN 02 */
+    's2-label': '02 · Proceso', 's2-h2': 'Enfoque de <em>Design Thinking</em>',
+    'tag-ci': 'Indagación Contextual', 'tag-fg': 'Grupo Focal', 'tag-pd': 'Desarrollo de Personas',
+    'tag-em': 'Mapa de Empatía', 'tag-ut': 'Pruebas de Usabilidad (n=8)', 'tag-ta': 'Análisis Temático',
+    'step1-num': '01 · Empatizar', 'step1-h3': 'Indagación Contextual',
+    'step1-p': 'Se realizó un estudio contextual en una universidad de Huajuapan de León examinando la alfabetización emocional entre los jóvenes locales. Se entrevistaron psicólogos para comprender las barreras culturales específicas del contexto oaxaqueño. Los estudiantes reportaron dificultad para identificar emociones debido a las normas culturales de la masculinidad.',
+    'step2-num': '02 · Definir', 'step2-h3': 'Grupo Focal',
+    'step2-p': '8 estudiantes de ingeniería de 20 a 24 años en el Laboratorio de Usabilidad identificaron preferencias clave. Los usuarios prefirieron <strong>avatares no humanos</strong> (animales, robots, figuras abstractas) y destacaron la importancia de un diseño visual culturalmente apropiado.',
+    'step3-num': '03 · Idear', 'step3-h3': 'Lluvia de Ideas y Storyboard',
+    'step3-p': 'Sesiones de mapas mentales generaron conceptos evaluados por factibilidad, relevancia cultural e impacto social. El storyboard validó el concepto con participantes de distintos niveles técnicos. Resultado: Tíku — app móvil + pulsera inteligente con avatares personalizables y misiones emocionales.',
+    'step4-num': '04 · Probar', 'step4-h3': '3 Iteraciones · Del Boceto al Hi-Fi',
+    'step4-p': 'Pruebas Mago de Oz evaluaron el flujo conversacional. Pruebas A/B con 8 usuarios evaluaron color, fuentes y avatares. Prueba de usabilidad final con 5 usuarios en 6 escenarios de tareas. Cambio clave: paletas más claras, diálogos más cortos, lenguaje juvenil apropiado.',
+    'cap-fg': 'Grupo focal · Indagación contextual con estudiantes',
+    'cap-wf': 'Wireframes en papel · Sesión temprana de co-diseño',
+    'cap-lab': 'UsaLab · Desarrollo del storyboard',
+    'cap-exp': 'Consulta con expertos · Prueba remota Mago de Oz',
+    'cap-screens': 'Prototipo hi-fi · Pantallas finales de la app',
+    /* SECCIÓN 03 */
+    's3-label': '03 · Hallazgos Clave', 's3-h2': 'Lo que <em>aprendimos</em>',
+    'f1-label': 'Diseño de Avatares', 'f1-p': 'Los usuarios rechazaron los avatares humanos, especialmente los masculinos. Los avatares de robots y animales crearon una distancia psicológica que hizo más segura la expresión emocional.',
+    'f2-label': 'Color y Lenguaje', 'f2-p': 'Se prefirieron paletas claras y cálidas para evitar asociaciones con la tristeza. El lenguaje informal y de pares redujo el estigma. "Bro" se percibió como poco natural — refinado en V2.',
+    'f3-label': 'Gamificación', 'f3-p': 'Los sistemas de recompensa (personalizaciones desbloqueables del avatar) aumentaron significativamente la motivación para realizar ejercicios emocionales y regresar a la app.',
+    'quote-text': '"Los usuarios se sentían más cómodos compartiendo emociones con mujeres por miedo al juicio de otros hombres — y preferían fuertemente los avatares no humanos como compañeros emocionales."',
+    'quote-source': '— Hallazgo del Grupo Focal, Laboratorio de Usabilidad · UTM',
+    /* SECCIÓN 04 */
+    's4-label': '04 · Resultados', 's4-h2': 'Resultados e <em>impacto</em>',
+    's4-p1': 'Tres iteraciones de prototipo con 38 actividades en total, logrando una <strong>tasa de completitud de tareas del 100%</strong>. La satisfacción del usuario mejoró del 65% al 82% entre iteraciones.',
+    's4-p2': 'El proyecto se alinea con cuatro ODS de la ONU: Objetivo 3 (Salud y Bienestar), Objetivo 5 (Igualdad de Género), Objetivo 10 (Reducción de Desigualdades) y Objetivo 16 (Paz y Justicia).',
+    's4-p3': 'Seleccionado como <strong>finalista en HCI International 2025</strong> en Gotemburgo, Suecia — una de las conferencias de IHC más prestigiosas a nivel mundial.',
+    'r-stat1': 'tasa de completitud (38 actividades)', 'r-stat2': 'satisfacción V3 (desde 65%)',
+    'r-stat3': 'usuarios en pruebas de usabilidad', 'r-stat4': 'iteraciones de prototipo',
+    'quote2-text': '"Al final de todo, lo único que deseo es que alguien me pregunte sinceramente \'¿Cómo estás?\' y sentir que realmente me escuchan."',
+    'quote2-source': '— Participante del estudio',
+    /* FOOTER */
+    'footer-right': 'Tíku · Finalista HCI International 2025',
+  }
+};
+
+let lang = localStorage.getItem('lang') || 'en';
+function setLang(l) {
+  lang = l; localStorage.setItem('lang', l);
+  document.body.classList.add('switching');
+  setTimeout(() => {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const k = el.getAttribute('data-i18n');
+      if (t[l][k] !== undefined) el.innerHTML = t[l][k];
+    });
+    document.documentElement.lang = l;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent === l.toUpperCase()));
+    document.body.classList.remove('switching');
+  }, 150);
+}
+if (lang === 'es') setLang('es');
+</script>
+
+</body>
+</html>

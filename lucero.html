@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lucero — Case Study | Luis Mario Espinosa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<!-- ============================================================
+     STYLES — misma base que tiku.html
+     Diferencias visuales:
+     - Hero dividido en 2 columnas: texto izquierda, foto derecha
+     - Foto de portada ocupa toda la altura del hero
+     ============================================================ -->
+<style>
+  /* === VARIABLES GLOBALES === */
+  :root{--white:#ffffff;--off:#f7f5f2;--ink:#111111;--gray:#888888;--light:#e8e4de;--accent:#c95c2e;--sans:'DM Sans',sans-serif;--serif:'DM Serif Display',Georgia,serif;}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--white);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;}
+
+  /* === NAV === */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1.5rem 3rem;background:rgba(255,255,255,0.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--light);}
+  .nav-name{font-family:var(--serif);font-size:1.05rem;color:var(--ink);text-decoration:none;}
+  .nav-right{display:flex;align-items:center;gap:2rem;}
+
+  /* === BOTÓN DE IDIOMA === */
+  .lang-switch{display:flex;border:1px solid var(--light);border-radius:2px;overflow:hidden;}
+  .lang-btn{font-size:0.72rem;font-weight:500;letter-spacing:0.08em;padding:0.35rem 0.75rem;background:none;border:none;cursor:pointer;color:var(--gray);transition:all 0.2s;font-family:var(--sans);}
+  .lang-btn.active{background:var(--ink);color:var(--white);}
+  .lang-btn:hover:not(.active){background:var(--off);color:var(--ink);}
+  .nav-back{font-size:0.78rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray);text-decoration:none;transition:color 0.2s;}
+  .nav-back:hover{color:var(--ink);}
+
+  /* === HERO DIVIDIDO — texto izquierda, foto derecha === */
+  .hero-split{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;border-bottom:1px solid var(--light);}
+  .hero-content{padding:9rem 3rem 4rem;display:flex;flex-direction:column;justify-content:center;border-right:1px solid var(--light);}
+  .hero-photo{overflow:hidden;}
+  .hero-photo img{width:100%;height:100%;object-fit:cover;object-position:center 20%;display:block;}
+
+  /* === TIPOGRAFÍA HERO === */
+  .hero-eyebrow{font-size:0.75rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:1.25rem;}
+  h1{font-family:var(--serif);font-size:clamp(3rem,6vw,5.5rem);font-weight:400;line-height:1.08;margin-bottom:1.25rem;}
+  h1 em{font-style:italic;color:var(--gray);}
+  .hero-sub{font-size:1rem;color:var(--gray);line-height:1.8;max-width:480px;margin-bottom:2rem;}
+
+  /* === META GRID === */
+  .meta-row{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--light);border-left:1px solid var(--light);margin-bottom:2rem;}
+  .meta-cell{padding:1rem 1.5rem;border-right:1px solid var(--light);border-bottom:1px solid var(--light);}
+  .meta-label{font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#bbb;display:block;margin-bottom:0.25rem;}
+  .meta-value{font-size:0.85rem;color:var(--ink);}
+
+  /* === BADGES Y BOTONES === */
+  .badges{display:flex;flex-wrap:wrap;gap:0.6rem;margin-bottom:2rem;}
+  .badge{font-size:0.72rem;font-weight:500;letter-spacing:0.06em;padding:0.5rem 1rem;border:1.5px solid;border-radius:2px;}
+  .badge.accent{border-color:var(--accent);color:var(--accent);}
+  .badge.dark{border-color:var(--light);color:var(--gray);}
+  .btn{display:inline-block;font-size:0.78rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.9rem 2rem;text-decoration:none;border:1.5px solid;border-radius:2px;transition:all 0.2s;margin-right:0.75rem;margin-bottom:0.75rem;}
+  .btn.primary{background:var(--ink);border-color:var(--ink);color:var(--white);}
+  .btn.primary:hover{background:transparent;color:var(--ink);}
+  .btn.secondary{background:transparent;border-color:var(--light);color:var(--gray);}
+  .btn.secondary:hover{border-color:var(--ink);color:var(--ink);}
+
+  /* === SECCIONES === */
+  .section{padding:5rem 3rem;border-top:1px solid var(--light);}
+  .section-inner{max-width:1000px;margin:0 auto;}
+  .section-label{font-size:0.72rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#bbb;margin-bottom:2.5rem;display:flex;align-items:center;gap:1rem;}
+  .section-label::after{content:'';flex:1;height:1px;background:var(--light);}
+  h2{font-family:var(--serif);font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:400;line-height:1.15;margin-bottom:1.5rem;}
+  h2 em{font-style:italic;color:var(--gray);}
+  h3{font-family:var(--serif);font-size:1.2rem;font-weight:400;margin-bottom:0.75rem;}
+  p{color:var(--gray);line-height:1.85;margin-bottom:1rem;}
+  p strong{color:var(--ink);font-weight:500;}
+
+  /* === LAYOUTS === */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+  .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;background:var(--light);}
+  .col-card{background:var(--white);padding:2rem;}
+  .col-label{font-size:0.68rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:0.75rem;display:block;}
+
+  /* === ESTADÍSTICAS === */
+  .stats{display:grid;border:1px solid var(--light);margin:2rem 0;}
+  .stat{padding:2rem 1.5rem;border-right:1px solid var(--light);text-align:center;}
+  .stat:last-child{border-right:none;}
+  .stat-n{font-family:var(--serif);font-size:3rem;font-weight:400;color:var(--ink);line-height:1;display:block;margin-bottom:0.5rem;}
+  .stat-d{font-size:0.75rem;color:var(--gray);line-height:1.4;}
+
+  /* === PASOS DEL PROCESO === */
+  .steps{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--light);margin:2rem 0;}
+  .step{background:var(--white);padding:2.5rem;}
+  .step-num{font-size:0.68rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:0.75rem;display:block;}
+
+  /* === GALERÍA DE FOTOS === */
+  .photo-grid{display:grid;gap:2px;background:var(--light);margin:2rem 0;}
+  .photo-grid.cols-2{grid-template-columns:1fr 1fr;}
+  .photo-wrap{overflow:hidden;background:var(--off);}
+  .photo-wrap.r-4-3{aspect-ratio:4/3;}
+  .photo-wrap.r-3-4{aspect-ratio:3/4;}
+  .photo-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s ease;}
+  .photo-wrap:hover img{transform:scale(1.03);}
+  .photo-cap{font-size:0.72rem;color:var(--gray);padding:0.6rem 0;}
+
+  /* === TAGS === */
+  .tags{display:flex;flex-wrap:wrap;gap:0.4rem;margin:1.5rem 0;}
+  .tag{font-size:0.65rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;padding:0.3rem 0.75rem;border:1px solid var(--light);color:var(--gray);border-radius:2px;}
+
+  /* === CITA DESTACADA === */
+  .quote{border-left:3px solid var(--accent);padding:1.5rem 2rem;margin:2rem 0;background:var(--off);}
+  .quote p{font-family:var(--serif);font-size:1.1rem;font-style:italic;color:var(--ink);margin:0;line-height:1.6;}
+  .quote-source{font-size:0.72rem;color:var(--gray);margin-top:0.75rem;display:block;}
+
+  /* === BARRAS DE PROGRESO === */
+  .progress-list{display:flex;flex-direction:column;gap:1.25rem;margin:1.5rem 0;}
+  .progress-header{display:flex;justify-content:space-between;font-size:0.78rem;color:var(--gray);margin-bottom:0.4rem;}
+  .progress-header span{color:var(--ink);font-weight:500;}
+  .bar{height:3px;background:var(--light);}
+  .bar-fill{height:100%;background:var(--ink);}
+
+  /* === FOOTER === */
+  footer{padding:2rem 3rem;border-top:1px solid var(--light);display:flex;justify-content:space-between;align-items:center;}
+  footer span{font-size:0.75rem;color:#bbb;}
+
+  /* === TRANSICIÓN CAMBIO DE IDIOMA === */
+  [data-i18n]{transition:opacity 0.15s ease;}
+  body.switching [data-i18n]{opacity:0;}
+
+  /* === ANIMACIÓN ENTRADA === */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  .hero-content>*{animation:fadeUp 0.6s ease both;}
+  .hero-content>*:nth-child(2){animation-delay:0.08s;}
+  .hero-content>*:nth-child(3){animation-delay:0.16s;}
+
+  /* === RESPONSIVE === */
+  @media(max-width:800px){
+    nav{padding:1.25rem 1.5rem;}
+    .hero-split{grid-template-columns:1fr;min-height:auto;}
+    .hero-content{padding:7rem 1.5rem 3rem;border-right:none;}
+    .hero-photo{height:60vw;}
+    .section{padding:3rem 1.5rem;}
+    .two-col,.steps,.three-col{grid-template-columns:1fr;}
+    .photo-grid.cols-2{grid-template-columns:1fr;}
+    .stats{grid-template-columns:1fr!important;}
+    .stat{border-right:none;border-bottom:1px solid var(--light);}
+    footer{flex-direction:column;gap:0.5rem;padding:1.5rem;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAV — Nombre + botón volver + switch de idioma
+     ============================================================ -->
+<nav>
+  <a href="index.html" class="nav-name">Luis Mario Espinosa</a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-back" data-i18n="nav-back">← All Work</a>
+    <div class="lang-switch">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     HERO DIVIDIDO
+     Columna izquierda: texto, meta, badges, botones
+     Columna derecha: foto de niño abrazando a Lucero
+     ============================================================ -->
+<div class="hero-split">
+  <!-- Columna izquierda: contenido -->
+  <div class="hero-content">
+    <div class="hero-eyebrow" data-i18n="hero-eyebrow">Case Study · 2023 · Published Research</div>
+    <h1>Lucero</h1>
+    <p class="hero-sub" data-i18n="hero-sub">A transitional therapeutic object co-designed with children aged 5–10 navigating parental separation. Lucero accompanies and monitors the grieving process through voice interaction, storytelling, and daily care reminders.</p>
+
+    <!-- Meta: año, rol, dominio, tipo -->
+    <div class="meta-row">
+      <div class="meta-cell"><span class="meta-label" data-i18n="meta-year">Year</span><span class="meta-value">2023</span></div>
+      <div class="meta-cell"><span class="meta-label" data-i18n="meta-role">Role</span><span class="meta-value" data-i18n="role-value">UX Researcher & Designer</span></div>
+      <div class="meta-cell"><span class="meta-label" data-i18n="meta-domain">Domain</span><span class="meta-value" data-i18n="domain-value">Child Psychology & Health</span></div>
+      <div class="meta-cell"><span class="meta-label" data-i18n="meta-type">Type</span><span class="meta-value" data-i18n="type-value">Physical + Interaction</span></div>
+    </div>
+
+    <!-- Reconocimientos -->
+    <div class="badges">
+      <span class="badge accent">🥇 1st Place · MEXHCI 2023</span>
+      <span class="badge dark">📄 Published · DOI: 10.47756/aihc.y9i1.188</span>
+    </div>
+
+    <!-- Botones -->
+    <div>
+      <a href="https://doi.org/10.47756/aihc.y9i1.188" target="_blank" class="btn primary" data-i18n="btn-paper">Read Publication</a>
+      <a href="index.html" class="btn secondary" data-i18n="btn-back">← Back</a>
+    </div>
+  </div>
+
+  <!-- Columna derecha: foto hero (niño abrazando Lucero, cara borrosa) -->
+  <div class="hero-photo">
+    <img src="img/lucero-hug.jpg" alt="Child embracing Lucero therapeutic prototype">
+  </div>
+</div>
+
+<!-- ============================================================
+     SECCIÓN 01 — CONTEXTO Y PROBLEMA
+     ============================================================ -->
+<section class="section">
+  <div class="section-inner">
+    <div class="section-label" data-i18n="s1-label">01 · Context</div>
+    <div class="two-col">
+      <div>
+        <h2 data-i18n="s1-h2">The <em>problem</em></h2>
+        <p data-i18n="s1-p1">In México, <strong>166,766 divorces were registered in 2022</strong> — an 11.4% increase from the prior year, with 48.1% involving minor children. In Oaxaca alone, 2,599 divorces were recorded.</p>
+        <p data-i18n="s1-p2">Children of separated parents face elevated risks of behavioral disorders, poor academic performance, anxiety, and long-term psychiatric conditions. Yet in Huajuapan de León, where <strong>26,321 people live in moderate poverty</strong>, private psychological support is inaccessible to most families.</p>
+        <p data-i18n="s1-p3">Public institutions like DIF face capacity limitations. The question became: could a <strong>transitional object</strong> — something a child could hold and talk to — serve as a therapeutic bridge?</p>
+      </div>
+      <!-- Estadísticas clave -->
+      <div>
+        <div class="stats" style="grid-template-columns:1fr 1fr;">
+          <div class="stat"><span class="stat-n">72K</span><span class="stat-d" data-i18n="stat1">minors in México with divorced parents</span></div>
+          <div class="stat" style="border-right:none;"><span class="stat-n">48%</span><span class="stat-d" data-i18n="stat2">of 2022 divorces involved minor children</span></div>
+          <div class="stat" style="border-top:1px solid var(--light);"><span class="stat-n">2–3</span><span class="stat-d" data-i18n="stat3">years typical adaptation — without support effects persist</span></div>
+          <div class="stat" style="border-right:none;border-top:1px solid var(--light);"><span class="stat-n">8</span><span class="stat-d" data-i18n="stat4">expert interviews with child psychologists</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 02 — PROCESO DE DISEÑO
+     Co-Diseño con niños como metodología central
+     ============================================================ -->
+<section class="section" style="background:var(--off);">
+  <div class="section-inner">
+    <div class="section-label" data-i18n="s2-label">02 · Process</div>
+    <h2 data-i18n="s2-h2">Co-designing <em>with</em> children</h2>
+
+    <!-- Tags de métodos -->
+    <div class="tags">
+      <span class="tag" data-i18n="tag-si">Semi-Structured Interviews</span>
+      <span class="tag" data-i18n="tag-ec">Expert Consultation</span>
+      <span class="tag" data-i18n="tag-cd">Co-Design with Children</span>
+      <span class="tag">Storyboard</span>
+      <span class="tag" data-i18n="tag-pp">Physical Prototyping</span>
+      <span class="tag">Wizard of Oz</span>
+      <span class="tag" data-i18n="tag-ta">Think-Aloud Protocol</span>
+      <span class="tag">Likert Scale</span>
+    </div>
+
+    <!-- 4 pasos del proceso -->
+    <div class="steps">
+      <!-- Paso 1: Entrevistas a expertos -->
+      <div class="step">
+        <span class="step-num" data-i18n="step1-num">01 · Empathize</span>
+        <h3 data-i18n="step1-h3">Expert Interviews</h3>
+        <p data-i18n="step1-p"><strong>8 semi-structured interviews</strong> with child and school psychologists in Oaxaca. Key findings: guilt, low self-esteem, academic decline, isolation, and aggression as primary challenges. All experts endorsed transitional objects combined with play and art therapy.</p>
+      </div>
+      <!-- Paso 2: Co-diseño en DIF -->
+      <div class="step">
+        <span class="step-num" data-i18n="step2-num">02 · Co-Design</span>
+        <h3 data-i18n="step2-h3">Children as Co-Creators</h3>
+        <p data-i18n="step2-p">Co-design sessions at DIF municipal with children aged 5–10. Children drew their ideal object, <strong>selected iconography</strong> themselves (star = voice diary, book = story, checkbox = reminders), and customized a plush prototype — driving the final design direction.</p>
+      </div>
+      <!-- Paso 3: Prototipado físico -->
+      <div class="step">
+        <span class="step-num" data-i18n="step3-num">03 · Prototype</span>
+        <h3 data-i18n="step3-h3">Lo-Fi to Physical Build</h3>
+        <p data-i18n="step3-p">Storyboard → medium-fidelity physical prototype: a plush toy with an astronaut suit, embossed tactile buttons with children's selected icons, integrated speaker, and LED lighting. V2.0 switched to warmer tones after V1 feedback.</p>
+      </div>
+      <!-- Paso 4: Pruebas de usabilidad en 2 fases -->
+      <div class="step">
+        <span class="step-num" data-i18n="step4-num">04 · Validate</span>
+        <h3 data-i18n="step4-h3">2-Phase Usability Testing</h3>
+        <p data-i18n="step4-p"><strong>Phase 1 (DIF):</strong> 9 children, 45 tasks, 64% completion, 94% satisfaction. Children named it "Lucero." <br><br><strong>Phase 2 (UsaLab UTM):</strong> 6 children, 30 tasks, 90% completion, <strong>97% satisfaction</strong>. Children asked to keep Lucero.</p>
+      </div>
+    </div>
+
+    <!-- Fotos del proceso: co-diseño y prueba de usabilidad -->
+    <div class="photo-grid cols-2">
+      <div>
+        <div class="photo-wrap r-4-3"><img src="img/lucero-codesign.jpg" alt="Co-design session"></div>
+        <p class="photo-cap" data-i18n="cap-cd">Co-design session — Children selecting iconography at DIF</p>
+      </div>
+      <div>
+        <div class="photo-wrap r-4-3"><img src="img/lucero-test.jpg" alt="Usability testing session"></div>
+        <p class="photo-cap" data-i18n="cap-test">Usability test — Wizard of Oz session at DIF municipal</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 03 — HALLAZGOS CLAVE
+     ============================================================ -->
+<section class="section">
+  <div class="section-inner">
+    <div class="section-label" data-i18n="s3-label">03 · Findings</div>
+    <h2 data-i18n="s3-h2">Key design <em>decisions</em></h2>
+
+    <!-- 3 hallazgos del co-diseño -->
+    <div class="three-col">
+      <div class="col-card">
+        <span class="col-label" data-i18n="f1-label">Transitional Object</span>
+        <p style="font-size:0.9rem;" data-i18n="f1-p">Children's strong preference for plush toys over electronic devices shaped the entire product direction — a physical companion to hold, not a screen to use.</p>
+      </div>
+      <div class="col-card">
+        <span class="col-label" data-i18n="f2-label">Child-Led Iconography</span>
+        <p style="font-size:0.9rem;" data-i18n="f2-p">Icons were selected by the children themselves during co-design, ensuring intuitive use without requiring reading ability. 46% had icon issues in V1 — resolved in V2.</p>
+      </div>
+      <div class="col-card">
+        <span class="col-label" data-i18n="f3-label">Emotional Bonding</span>
+        <p style="font-size:0.9rem;" data-i18n="f3-p">By Phase 2, children showed genuine affective attachment — hugging Lucero spontaneously and responding emotionally to phrases like <em>"Yo también te quiero mucho."</em></p>
+      </div>
+    </div>
+
+    <!-- Cita de los usuarios -->
+    <div class="quote">
+      <p data-i18n="quote-text">"Some children asked to keep Lucero at the end of the session, and expressed their affection when Lucero told them emotional phrases."</p>
+      <span class="quote-source" data-i18n="quote-source">— Usability Test Phase 2, UsaLab · UTM</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 04 — RESULTADOS
+     Barras de progreso V1 → V2 + fotos de interacción
+     ============================================================ -->
+<section class="section" style="background:var(--off);">
+  <div class="section-inner">
+    <div class="section-label" data-i18n="s4-label">04 · Results</div>
+    <div class="two-col">
+      <div>
+        <h2 data-i18n="s4-h2">Outcomes & <em>impact</em></h2>
+
+        <!-- Barras de progreso: mejora de V1 a V2 -->
+        <div class="progress-list">
+          <div>
+            <div class="progress-header"><span data-i18n="prog1-label">Understands voice function</span><span>70% → 100%</span></div>
+            <div class="bar"><div class="bar-fill" style="width:100%"></div></div>
+          </div>
+          <div>
+            <div class="progress-header"><span data-i18n="prog2-label">Turns Lucero on</span><span>50% → 83%</span></div>
+            <div class="bar"><div class="bar-fill" style="width:83%"></div></div>
+          </div>
+          <div>
+            <div class="progress-header"><span data-i18n="prog3-label">Activates story feature</span><span>80% → 83%</span></div>
+            <div class="bar"><div class="bar-fill" style="width:83%"></div></div>
+          </div>
+          <div>
+            <div class="progress-header"><span data-i18n="prog4-label">Voice interaction</span><span>60% → 100%</span></div>
+            <div class="bar"><div class="bar-fill" style="width:100%"></div></div>
+          </div>
+        </div>
+
+        <!-- Botones finales -->
+        <div style="margin-top:2rem;">
+          <a href="https://doi.org/10.47756/aihc.y9i1.188" target="_blank" class="btn primary" data-i18n="btn-paper">Read Paper</a>
+          <a href="index.html" class="btn secondary" data-i18n="btn-back">← Portfolio</a>
+        </div>
+      </div>
+
+      <!-- Fotos de interacción emocional con Lucero -->
+      <div>
+        <div class="photo-grid cols-2" style="margin:0;">
+          <div>
+            <div class="photo-wrap r-3-4"><img src="img/lucero-girl.jpg" alt="Child with Lucero" style="object-position:top;"></div>
+          </div>
+          <div>
+            <div class="photo-wrap r-3-4"><img src="img/lucero-throw.jpg" alt="Child playing with Lucero"></div>
+          </div>
+        </div>
+        <p class="photo-cap" style="padding-top:0.75rem;" data-i18n="cap-play">Field interactions — children engaging spontaneously with Lucero</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <span>Luis Mario Espinosa Ortiz · Oaxaca, México</span>
+  <span data-i18n="footer-right">Lucero · 1st Place MEXHCI 2023 · Published</span>
+</footer>
+
+<!-- ============================================================
+     SCRIPT — Sistema de traducción EN/ES
+     Misma lógica que en tiku.html e index.html
+     Para agregar texto: data-i18n="clave" en HTML + entrada en t.en y t.es
+     ============================================================ -->
+<script>
+const t = {
+  en: {
+    /* NAV */
+    'nav-back': '← All Work',
+    /* HERO */
+    'hero-eyebrow': 'Case Study · 2023 · Published Research',
+    'hero-sub': 'A transitional therapeutic object co-designed with children aged 5–10 navigating parental separation. Lucero accompanies and monitors the grieving process through voice interaction, storytelling, and daily care reminders.',
+    /* META */
+    'meta-year': 'Year', 'meta-role': 'Role', 'meta-domain': 'Domain', 'meta-type': 'Type',
+    'role-value': 'UX Researcher & Designer',
+    'domain-value': 'Child Psychology & Health',
+    'type-value': 'Physical + Interaction',
+    /* BOTONES */
+    'btn-paper': 'Read Publication', 'btn-back': '← Back',
+    /* SECCIÓN 01 */
+    's1-label': '01 · Context', 's1-h2': 'The <em>problem</em>',
+    's1-p1': 'In México, <strong>166,766 divorces were registered in 2022</strong> — an 11.4% increase from the prior year, with 48.1% involving minor children. In Oaxaca alone, 2,599 divorces were recorded.',
+    's1-p2': 'Children of separated parents face elevated risks of behavioral disorders, poor academic performance, anxiety, and long-term psychiatric conditions. Yet in Huajuapan de León, where <strong>26,321 people live in moderate poverty</strong>, private psychological support is inaccessible to most families.',
+    's1-p3': 'Public institutions like DIF face capacity limitations. The question became: could a <strong>transitional object</strong> — something a child could hold and talk to — serve as a therapeutic bridge?',
+    'stat1': 'minors in México with divorced parents',
+    'stat2': 'of 2022 divorces involved minor children',
+    'stat3': 'years typical adaptation — without support effects persist',
+    'stat4': 'expert interviews with child psychologists',
+    /* SECCIÓN 02 */
+    's2-label': '02 · Process', 's2-h2': 'Co-designing <em>with</em> children',
+    'tag-si': 'Semi-Structured Interviews', 'tag-ec': 'Expert Consultation',
+    'tag-cd': 'Co-Design with Children', 'tag-pp': 'Physical Prototyping', 'tag-ta': 'Think-Aloud Protocol',
+    'step1-num': '01 · Empathize', 'step1-h3': 'Expert Interviews',
+    'step1-p': '<strong>8 semi-structured interviews</strong> with child and school psychologists in Oaxaca. Key findings: guilt, low self-esteem, academic decline, isolation, and aggression as primary challenges. All experts endorsed transitional objects combined with play and art therapy.',
+    'step2-num': '02 · Co-Design', 'step2-h3': 'Children as Co-Creators',
+    'step2-p': 'Co-design sessions at DIF municipal with children aged 5–10. Children drew their ideal object, <strong>selected iconography</strong> themselves (star = voice diary, book = story, checkbox = reminders), and customized a plush prototype — driving the final design direction.',
+    'step3-num': '03 · Prototype', 'step3-h3': 'Lo-Fi to Physical Build',
+    'step3-p': 'Storyboard → medium-fidelity physical prototype: a plush toy with an astronaut suit, embossed tactile buttons with children\'s selected icons, integrated speaker, and LED lighting. V2.0 switched to warmer tones after V1 feedback.',
+    'step4-num': '04 · Validate', 'step4-h3': '2-Phase Usability Testing',
+    'step4-p': '<strong>Phase 1 (DIF):</strong> 9 children, 45 tasks, 64% completion, 94% satisfaction. Children named it "Lucero." <br><br><strong>Phase 2 (UsaLab UTM):</strong> 6 children, 30 tasks, 90% completion, <strong>97% satisfaction</strong>. Children asked to keep Lucero.',
+    'cap-cd': 'Co-design session — Children selecting iconography at DIF',
+    'cap-test': 'Usability test — Wizard of Oz session at DIF municipal',
+    /* SECCIÓN 03 */
+    's3-label': '03 · Findings', 's3-h2': 'Key design <em>decisions</em>',
+    'f1-label': 'Transitional Object', 'f1-p': 'Children\'s strong preference for plush toys over electronic devices shaped the entire product direction — a physical companion to hold, not a screen to use.',
+    'f2-label': 'Child-Led Iconography', 'f2-p': 'Icons were selected by the children themselves during co-design, ensuring intuitive use without requiring reading ability. 46% had icon issues in V1 — resolved in V2.',
+    'f3-label': 'Emotional Bonding', 'f3-p': 'By Phase 2, children showed genuine affective attachment — hugging Lucero spontaneously and responding emotionally to phrases like <em>"Yo también te quiero mucho."</em>',
+    'quote-text': '"Some children asked to keep Lucero at the end of the session, and expressed their affection when Lucero told them emotional phrases."',
+    'quote-source': '— Usability Test Phase 2, UsaLab · UTM',
+    /* SECCIÓN 04 */
+    's4-label': '04 · Results', 's4-h2': 'Outcomes & <em>impact</em>',
+    'prog1-label': 'Understands voice function', 'prog2-label': 'Turns Lucero on',
+    'prog3-label': 'Activates story feature', 'prog4-label': 'Voice interaction',
+    'cap-play': 'Field interactions — children engaging spontaneously with Lucero',
+    /* FOOTER */
+    'footer-right': 'Lucero · 1st Place MEXHCI 2023 · Published',
+  },
+  es: {
+    /* NAV */
+    'nav-back': '← Todo el trabajo',
+    /* HERO */
+    'hero-eyebrow': 'Caso de Estudio · 2023 · Investigación Publicada',
+    'hero-sub': 'Un objeto terapéutico transicional co-diseñado con niños de 5 a 10 años que atraviesan la separación parental. Lucero acompaña y monitorea el proceso de duelo a través de interacción de voz, cuentos y recordatorios de cuidado diario.',
+    /* META */
+    'meta-year': 'Año', 'meta-role': 'Rol', 'meta-domain': 'Dominio', 'meta-type': 'Tipo',
+    'role-value': 'Investigador y Diseñador UX',
+    'domain-value': 'Psicología Infantil y Salud',
+    'type-value': 'Producto Físico + Interacción',
+    /* BOTONES */
+    'btn-paper': 'Leer Publicación', 'btn-back': '← Volver',
+    /* SECCIÓN 01 */
+    's1-label': '01 · Contexto', 's1-h2': 'El <em>problema</em>',
+    's1-p1': 'En México, se registraron <strong>166,766 divorcios en 2022</strong> — un aumento del 11.4% respecto al año anterior, con el 48.1% involucrando hijos menores de edad. En Oaxaca se registraron 2,599 divorcios ese mismo año.',
+    's1-p2': 'Los hijos de padres separados enfrentan mayores riesgos de trastornos conductuales, bajo rendimiento escolar, ansiedad y condiciones psiquiátricas a largo plazo. Sin embargo, en Huajuapan de León, donde <strong>26,321 personas viven en pobreza moderada</strong>, el apoyo psicológico privado es inaccesible para la mayoría.',
+    's1-p3': 'Las instituciones públicas como el DIF tienen capacidad limitada. La pregunta fue: ¿podría un <strong>objeto transicional</strong> — algo que el niño pueda abrazar y con quien hablar — servir como puente terapéutico?',
+    'stat1': 'menores en México con padres divorciados',
+    'stat2': 'de los divorcios de 2022 involucraron menores de edad',
+    'stat3': 'años de adaptación típica — sin apoyo los efectos persisten',
+    'stat4': 'entrevistas con psicólogos infantiles expertos',
+    /* SECCIÓN 02 */
+    's2-label': '02 · Proceso', 's2-h2': 'Co-diseñando <em>con</em> los niños',
+    'tag-si': 'Entrevistas Semiestructuradas', 'tag-ec': 'Consulta con Expertos',
+    'tag-cd': 'Co-Diseño con Niños', 'tag-pp': 'Prototipado Físico', 'tag-ta': 'Protocolo Pensamiento en Voz Alta',
+    'step1-num': '01 · Empatizar', 'step1-h3': 'Entrevistas a Expertos',
+    'step1-p': '<strong>8 entrevistas semiestructuradas</strong> con psicólogos infantiles y escolares en Oaxaca. Hallazgos clave: culpa, baja autoestima, bajo rendimiento académico, aislamiento y agresividad. Todos los expertos avalaron los objetos transicionales combinados con terapia de juego y arteterapia.',
+    'step2-num': '02 · Co-Diseño', 'step2-h3': 'Los Niños como Co-Creadores',
+    'step2-p': 'Sesiones de co-diseño en el DIF municipal con niños de 5 a 10 años. Los niños dibujaron su objeto ideal, <strong>seleccionaron la iconografía</strong> ellos mismos (estrella = diario de voz, libro = cuento, casilla = recordatorios) y personalizaron un peluche — guiando la dirección final del diseño.',
+    'step3-num': '03 · Prototipar', 'step3-h3': 'Del Boceto al Prototipo Físico',
+    'step3-p': 'Storyboard → prototipo físico de mediana fidelidad: peluche con traje de astronauta, botones táctiles en alto relieve con los iconos elegidos por los niños, bocina integrada e iluminación LED. La V2.0 cambió a tonos más cálidos tras la retroalimentación de la V1.',
+    'step4-num': '04 · Validar', 'step4-h3': 'Pruebas de Usabilidad en 2 Fases',
+    'step4-p': '<strong>Fase 1 (DIF):</strong> 9 niños, 45 tareas, 64% de completitud, 94% de satisfacción. Los niños nombraron el dispositivo "Lucero." <br><br><strong>Fase 2 (UsaLab UTM):</strong> 6 niños, 30 tareas, 90% de completitud, <strong>97% de satisfacción</strong>. Los niños pidieron quedarse con Lucero.',
+    'cap-cd': 'Sesión de co-diseño — Niños seleccionando iconografía en el DIF',
+    'cap-test': 'Prueba de usabilidad — Sesión Mago de Oz en el DIF municipal',
+    /* SECCIÓN 03 */
+    's3-label': '03 · Hallazgos', 's3-h2': 'Decisiones de diseño <em>clave</em>',
+    'f1-label': 'Objeto Transicional', 'f1-p': 'La fuerte preferencia de los niños por los peluches sobre los dispositivos electrónicos orientó toda la dirección del producto — un compañero físico para abrazar, no una pantalla para usar.',
+    'f2-label': 'Iconografía Creada por los Niños', 'f2-p': 'Los iconos fueron seleccionados por los propios niños durante el co-diseño, garantizando un uso intuitivo sin necesidad de saber leer. El 46% tuvo problemas con los iconos en la V1 — resuelto en la V2.',
+    'f3-label': 'Vínculo Emocional', 'f3-p': 'En la Fase 2, los niños mostraron un apego afectivo genuino — abrazando a Lucero espontáneamente y respondiendo emocionalmente a frases como <em>"Yo también te quiero mucho."</em>',
+    'quote-text': '"Algunos niños pidieron quedarse con Lucero al final de la sesión y expresaron su cariño cuando Lucero les decía frases emotivas."',
+    'quote-source': '— Prueba de Usabilidad Fase 2, UsaLab · UTM',
+    /* SECCIÓN 04 */
+    's4-label': '04 · Resultados', 's4-h2': 'Resultados e <em>impacto</em>',
+    'prog1-label': 'Comprende la función de voz', 'prog2-label': 'Enciende a Lucero',
+    'prog3-label': 'Activa la función de cuentos', 'prog4-label': 'Interacción de voz',
+    'cap-play': 'Interacciones en campo — niños relacionándose espontáneamente con Lucero',
+    /* FOOTER */
+    'footer-right': 'Lucero · 1er Lugar MEXHCI 2023 · Publicado',
+  }
+};
+
+let lang = localStorage.getItem('lang') || 'en';
+function setLang(l) {
+  lang = l; localStorage.setItem('lang', l);
+  document.body.classList.add('switching');
+  setTimeout(() => {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const k = el.getAttribute('data-i18n');
+      if (t[l][k] !== undefined) el.innerHTML = t[l][k];
+    });
+    document.documentElement.lang = l;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent === l.toUpperCase()));
+    document.body.classList.remove('switching');
+  }, 150);
+}
+if (lang === 'es') setLang('es');
+</script>
+
+</body>
+</html>
