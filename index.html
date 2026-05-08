@@ -33,12 +33,12 @@
   .meta-value a:hover{border-color:var(--ink);}
   .work{padding:4rem 3rem 6rem;}
   .work-label{font-size:0.75rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#bbb;margin-bottom:3rem;}
-  .project-featured{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:2px;text-decoration:none;color:inherit;}
+  .project-featured{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:16px;text-decoration:none;color:inherit;}
   .project-featured .proj-img{overflow:hidden;background:var(--off);aspect-ratio:4/3;}
   .project-featured .proj-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);}
   .project-featured:hover .proj-img img{transform:scale(1.04);}
   .project-featured .proj-info{background:var(--off);padding:3.5rem;display:flex;flex-direction:column;justify-content:center;}
-  .projects-row{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:2px;}
+  .projects-row{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:16px;}
   .project-card{text-decoration:none;color:inherit;display:block;background:var(--off);overflow:hidden;position:relative;}
   .project-card .proj-img{overflow:hidden;aspect-ratio:4/3;background:#e9e6e1;}
   .project-card .proj-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);}
@@ -117,7 +117,7 @@
   <div class="hero-meta">
     <div class="meta-item">
       <span class="meta-label" data-i18n="meta-education">Education</span>
-      <span class="meta-value">Master's degree in interactive media · HCI</span>
+      <span class="meta-value">M.Sc. Interactive Media · HCI</span>
     </div>
     <div class="meta-item">
       <span class="meta-label">Email</span>
@@ -129,7 +129,7 @@
     </div>
     <div class="meta-item">
       <span class="meta-label" data-i18n="meta-awards">Awards</span>
-      <span class="meta-value">MEXHCI 2023 · HCIInternation al 2025</span>
+      <span class="meta-value">MEXHCI 2023 · HCI Int'l 2025</span>
     </div>
   </div>
 </div>
@@ -157,7 +157,7 @@
   <div class="projects-row">
     <a href="lucero.html" class="project-card">
       <div class="proj-img">
-        <img src="img/lucero-hug.png" alt="Child embracing Lucero" style="object-position:center top;">
+        <img src="img/lucero-hug.jpg" alt="Child embracing Lucero" style="object-position:center top;">
       </div>
       <div class="proj-info">
         <span class="proj-tag">🥇 1st Place · MEXHCI 2023 · <span data-i18n="published">Published Research</span></span>
@@ -195,40 +195,23 @@
     </a>
   </div>
 
-  <div class="projects-row" style="margin-bottom:0;">
-    <a href="https://www.figma.com/proto/pE8RVR9dYgz6XiCJvYCiC8/Posgrado?node-id=25-661&p=f&t=XAnc9GsrQuyfYuu1-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=1%3A1694" target="_blank" class="project-card">
-      <div class="proj-img" style="background:#f0ede9;">
-        <img src="img/posgrado-ui.jpg" alt="Postgraduate system UI">
-      </div>
-      <div class="proj-info">
-        <span class="wip-badge" data-i18n="wip">In Development</span>
-        <span class="proj-tag" style="margin-top:0.25rem;">UX/UI Design · 2025 — Present</span>
-        <h3 class="proj-title" data-i18n="posgrado-title">Postgraduate System</h3>
-        <p class="proj-sub" data-i18n="posgrado-sub">Full UX/UI design for an academic management system at UTM covering tutoring, reports, and student monitoring.</p>
-        <div class="proj-methods">
-          <span class="proj-method">UI Design</span>
-          <span class="proj-method">Figma</span>
-          <span class="proj-method">Dashboards</span>
-        </div>
-      </div>
-    </a>
-
-    <div class="project-card" style="cursor:default;">
-      <div class="proj-img">
-        <img src="img/tiku-focusgroup.jpg" alt="Research session" style="width:100%;height:100%;object-fit:cover;">
-      </div>
-      <div class="proj-info">
-        <span class="proj-tag" data-i18n="mr-tag">Master's Thesis · 2024–2026</span>
-        <h3 class="proj-title" data-i18n="mr-title">MR Attention Research</h3>
-        <p class="proj-sub" data-i18n="mr-sub">Designing and implementing an immersive environment to improve sustained attention in university students using Meta Quest 3.</p>
-        <div class="proj-methods">
-          <span class="proj-method">Unity</span>
-          <span class="proj-method">Meta Quest 3</span>
-          <span class="proj-method" data-i18n="method-cognitive">Cognitive Load</span>
-        </div>
+  <!-- Posgrado — ocupa el ancho completo como proyecto destacado secundario -->
+  <a href="https://www.figma.com/proto/pE8RVR9dYgz6XiCJvYCiC8/Posgrado?node-id=25-661&p=f&t=XAnc9GsrQuyfYuu1-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=1%3A1694" target="_blank" class="project-featured" style="margin-bottom:0;">
+    <div class="proj-img" style="background:#f0ede9;">
+      <img src="img/posgrado-ui.jpg" alt="Postgraduate system UI" style="object-fit:cover;">
+    </div>
+    <div class="proj-info">
+      <span class="wip-badge" data-i18n="wip">In Development</span>
+      <span class="proj-tag" style="margin-top:0.5rem;">UX/UI Design · 2025 — Present</span>
+      <h2 class="proj-title" data-i18n="posgrado-title">Postgraduate System</h2>
+      <p class="proj-sub" data-i18n="posgrado-sub">Full UX/UI design for an academic management system at UTM covering tutoring, reports, and student monitoring.</p>
+      <div class="proj-methods">
+        <span class="proj-method">UI Design</span>
+        <span class="proj-method">Figma</span>
+        <span class="proj-method">Dashboards</span>
       </div>
     </div>
-  </div>
+  </a>
 </section>
 
 <section id="about" class="about">
@@ -293,8 +276,6 @@ const t = {
     'immersive-sub':'UCD research with 151 students to design VR/MR environments that support autonomous study and reduce cognitive load.',
     'posgrado-title':'Postgraduate System',
     'posgrado-sub':'Full UX/UI design for an academic management system at UTM covering tutoring, reports, and student monitoring.',
-    'mr-tag':"Master's Thesis · 2024–2026",'mr-title':'MR Attention Research',
-    'mr-sub':'Designing and implementing an immersive environment to improve sustained attention in university students using Meta Quest 3.',
     'wip':'In Development','published':'Published Research','thesis':"Master's Thesis",
     'about-h2':'Research-driven design<br>for <em>real</em> contexts',
     'about-p1':"I'm <strong>Luis Mario Espinosa</strong>, an interdisciplinary designer and researcher specializing in Human-Computer Interaction. My work sits at the intersection of cognitive science, inclusive design, and spatial computing.",
@@ -322,8 +303,6 @@ const t = {
     'immersive-sub':'Investigación con DCU con 151 estudiantes para diseñar entornos VR/MR que apoyen el estudio autónomo y reduzcan la carga cognitiva.',
     'posgrado-title':'Sistema de Posgrado',
     'posgrado-sub':'Diseño completo de UX/UI para un sistema de gestión académica en la UTM: tutorías, reportes y seguimiento de estudiantes.',
-    'mr-tag':'Tesis de Maestría · 2024–2026','mr-title':'Investigación en MR para la Atención',
-    'mr-sub':'Diseño e implementación de un entorno inmersivo para mejorar la atención sostenida en estudiantes universitarios usando Meta Quest 3.',
     'wip':'En Desarrollo','published':'Investigación Publicada','thesis':'Tesis de Maestría',
     'about-h2':'Diseño basado en investigación<br>para contextos <em>reales</em>',
     'about-p1':'Soy <strong>Luis Mario Espinosa</strong>, diseñador e investigador interdisciplinario especializado en Interacción Humano-Computadora. Mi trabajo está en la intersección de las ciencias cognitivas, el diseño inclusivo y la computación espacial.',
