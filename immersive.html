@@ -141,6 +141,23 @@
   .quote p{font-family:var(--serif);font-size:1.1rem;font-style:italic;color:var(--ink);margin:0;line-height:1.6;}
   .quote-source{font-size:0.72rem;color:var(--gray);margin-top:0.75rem;display:block;}
 
+  /* === LÍNEA DE TIEMPO DE FASES === */
+  .timeline{display:flex;flex-direction:column;gap:0;margin-top:3rem;position:relative;}
+  .timeline::before{content:'';position:absolute;left:10px;top:12px;bottom:12px;width:1px;background:var(--light);}
+  .phase{display:flex;gap:2rem;align-items:flex-start;padding:1.5rem 0;position:relative;}
+  .phase-dot{width:21px;height:21px;border-radius:50%;border:2px solid var(--light);background:var(--white);flex-shrink:0;margin-top:2px;position:relative;z-index:1;transition:all 0.2s;}
+  .phase.done .phase-dot{background:var(--ink);border-color:var(--ink);}
+  .phase.active .phase-dot{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 4px rgba(201,92,46,0.15);}
+  .phase.pending .phase-dot{background:var(--white);border-color:var(--light);}
+  .phase-body{flex:1;padding-bottom:1rem;border-bottom:1px solid var(--light);}
+  .phase:last-child .phase-body{border-bottom:none;}
+  .phase-tag{font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#bbb;display:block;margin-bottom:0.4rem;}
+  .phase.done .phase-tag{color:var(--ink);}
+  .active-tag{color:var(--accent)!important;}
+  .phase-title{font-family:var(--serif);font-size:1.1rem;font-weight:400;color:var(--ink);margin-bottom:0.3rem;}
+  .phase.pending .phase-title{color:var(--gray);}
+  .phase-desc{font-size:0.82rem;color:var(--gray);line-height:1.6;}
+
   /* === FOOTER === */
   footer{padding:2rem 3rem;border-top:1px solid var(--light);display:flex;justify-content:space-between;align-items:center;}
   footer span{font-size:0.75rem;color:#bbb;}
@@ -435,6 +452,79 @@
 </section>
 
 <!-- ============================================================
+     SECCIÓN 05 — ESTADO ACTUAL
+     Línea de tiempo con las fases de la investigación
+     La fase activa se resalta visualmente
+     ============================================================ -->
+<section class="section">
+  <div class="section-inner">
+    <div class="section-label" data-i18n="s5-label">05 · Current Status</div>
+    <div style="max-width:680px;">
+      <h2 data-i18n="s5-h2">Research in <em>progress</em></h2>
+      <p data-i18n="s5-p">The design phase is complete. The project is now in active development — building the Mixed Reality environment in Unity for Meta Quest 3, informed by all previous research findings.</p>
+    </div>
+
+    <!-- Línea de tiempo de fases -->
+    <div class="timeline">
+      <!-- Fase 1: Completada -->
+      <div class="phase done">
+        <div class="phase-dot"></div>
+        <div class="phase-body">
+          <span class="phase-tag" data-i18n="phase-done">✓ Completed</span>
+          <div class="phase-title" data-i18n="phase1-title">Research & Analysis</div>
+          <div class="phase-desc" data-i18n="phase1-desc">Literature review · Exploratory survey (n=9) · Structured questionnaire (n=151)</div>
+        </div>
+      </div>
+      <!-- Fase 2: Completada -->
+      <div class="phase done">
+        <div class="phase-dot"></div>
+        <div class="phase-body">
+          <span class="phase-tag" data-i18n="phase-done">✓ Completed</span>
+          <div class="phase-title" data-i18n="phase2-title">Conceptual Design</div>
+          <div class="phase-desc" data-i18n="phase2-desc">3 design proposals derived from requirements · Focus group evaluation (n=10) · Mixed Reality selected</div>
+        </div>
+      </div>
+      <!-- Fase 3: Completada -->
+      <div class="phase done">
+        <div class="phase-dot"></div>
+        <div class="phase-body">
+          <span class="phase-tag" data-i18n="phase-done">✓ Completed</span>
+          <div class="phase-title" data-i18n="phase3-title">Publication</div>
+          <div class="phase-desc" data-i18n="phase3-desc">Paper accepted at CLIHC 2025 · Latin American HCI Conference</div>
+        </div>
+      </div>
+      <!-- Fase 4: ACTIVA AHORA -->
+      <div class="phase active">
+        <div class="phase-dot"></div>
+        <div class="phase-body">
+          <span class="phase-tag active-tag" data-i18n="phase-active">→ In progress</span>
+          <div class="phase-title" data-i18n="phase4-title">Environment Development</div>
+          <div class="phase-desc" data-i18n="phase4-desc">Building the Mixed Reality environment in Unity · Meta Quest 3 · Passthrough + spatial interfaces</div>
+        </div>
+      </div>
+      <!-- Fase 5: Pendiente -->
+      <div class="phase pending">
+        <div class="phase-dot"></div>
+        <div class="phase-body">
+          <span class="phase-tag" data-i18n="phase-pending">Upcoming</span>
+          <div class="phase-title" data-i18n="phase5-title">Usability Evaluation</div>
+          <div class="phase-desc" data-i18n="phase5-desc">Testing with university students · Cognitive load measurement · Attention and performance metrics</div>
+        </div>
+      </div>
+      <!-- Fase 6: Pendiente -->
+      <div class="phase pending">
+        <div class="phase-dot"></div>
+        <div class="phase-body">
+          <span class="phase-tag" data-i18n="phase-pending">Upcoming</span>
+          <div class="phase-title" data-i18n="phase6-title">Thesis Defense</div>
+          <div class="phase-desc" data-i18n="phase6-desc">Expected 2026 · Universidad Tecnológica de la Mixteca</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
      FOOTER
      ============================================================ -->
 <footer>
@@ -513,6 +603,25 @@ const t = {
     'final-stat1': 'actual MR cost vs $1,160 estimated',
     'final-stat2': 'Pomodoro cycles as HCI fatigue strategy',
     'final-stat3': 'Accepted 2025',
+    /* SECCIÓN 05 — ESTADO ACTUAL */
+    's5-label': '05 · Current Status',
+    's5-h2': 'Research in <em>progress</em>',
+    's5-p': 'The design phase is complete. The project is now in active development — building the Mixed Reality environment in Unity for Meta Quest 3, informed by all previous research findings.',
+    'phase-done': '✓ Completed',
+    'phase-active': '→ In progress',
+    'phase-pending': 'Upcoming',
+    'phase1-title': 'Research & Analysis',
+    'phase1-desc': 'Literature review · Exploratory survey (n=9) · Structured questionnaire (n=151)',
+    'phase2-title': 'Conceptual Design',
+    'phase2-desc': '3 design proposals derived from requirements · Focus group evaluation (n=10) · Mixed Reality selected',
+    'phase3-title': 'Publication',
+    'phase3-desc': 'Paper accepted at CLIHC 2025 · Latin American HCI Conference',
+    'phase4-title': 'Environment Development',
+    'phase4-desc': 'Building the Mixed Reality environment in Unity · Meta Quest 3 · Passthrough + spatial interfaces',
+    'phase5-title': 'Usability Evaluation',
+    'phase5-desc': 'Testing with university students · Cognitive load measurement · Attention and performance metrics',
+    'phase6-title': 'Thesis Defense',
+    'phase6-desc': 'Expected 2026 · Universidad Tecnológica de la Mixteca',
     /* FOOTER */
     'footer-right': "Master's Thesis · CLIHC 2025 · SECIHTI",
   },
@@ -580,6 +689,25 @@ const t = {
     'final-stat1': 'costo real de RM vs $1,160 estimado',
     'final-stat2': 'ciclos Pomodoro como estrategia de IHC para la fatiga',
     'final-stat3': 'Aceptado 2025',
+    /* SECCIÓN 05 — ESTADO ACTUAL */
+    's5-label': '05 · Estado Actual',
+    's5-h2': 'Investigación en <em>curso</em>',
+    's5-p': 'La fase de diseño está completa. El proyecto se encuentra ahora en desarrollo activo — construyendo el entorno de Realidad Mixta en Unity para Meta Quest 3, fundamentado en todos los hallazgos de investigación previos.',
+    'phase-done': '✓ Completado',
+    'phase-active': '→ En progreso',
+    'phase-pending': 'Próximamente',
+    'phase1-title': 'Investigación y Análisis',
+    'phase1-desc': 'Revisión de literatura · Sondeo exploratorio (n=9) · Cuestionario estructurado (n=151)',
+    'phase2-title': 'Diseño Conceptual',
+    'phase2-desc': '3 propuestas de diseño derivadas de requerimientos · Evaluación con grupo focal (n=10) · Realidad Mixta seleccionada',
+    'phase3-title': 'Publicación',
+    'phase3-desc': 'Paper aceptado en CLIHC 2025 · Congreso Latinoamericano de IHC',
+    'phase4-title': 'Desarrollo del Entorno',
+    'phase4-desc': 'Construcción del entorno de Realidad Mixta en Unity · Meta Quest 3 · Passthrough + interfaces espaciales',
+    'phase5-title': 'Evaluación de Usabilidad',
+    'phase5-desc': 'Pruebas con estudiantes universitarios · Medición de carga cognitiva · Métricas de atención y desempeño',
+    'phase6-title': 'Defensa de Tesis',
+    'phase6-desc': 'Esperada 2026 · Universidad Tecnológica de la Mixteca',
     /* FOOTER */
     'footer-right': 'Tesis de Maestría · CLIHC 2025 · SECIHTI',
   }
